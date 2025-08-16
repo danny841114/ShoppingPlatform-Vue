@@ -68,9 +68,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 /* 商品相關變數 */
 const productName = ref();
@@ -149,16 +149,12 @@ const addProduct = async () => {
   }
 
   try {
-    const response = await axios.post(
-      "http://localhost:8080/api/product",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.post(`${apiBase}/api/product`, formData, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
     window.location.href = "/product/manage";
   } catch (error) {
     console.error("新增商品失敗:", error);

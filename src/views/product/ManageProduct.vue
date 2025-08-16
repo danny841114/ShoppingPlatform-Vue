@@ -38,7 +38,7 @@
           </td>
           <td class="align-middle text-center">
             <img
-              :src="`http://localhost:8080/product/${product.id}/photo`"
+              :src="`${apiBase}/api/product/${product.id}/photo`"
               alt="商品圖片"
               height="80"
               @error="
@@ -69,6 +69,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 const router = useRouter();
 const productList = ref([]);
@@ -84,7 +85,7 @@ const jwt = getCookie("jwt");
 
 /* 獲取商品列表 */
 const getProductList = async () => {
-  const response = await axios.get("http://localhost:8080/api/product/vendor", {
+  const response = await axios.get(`${apiBase}/api/product/vendor`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
@@ -112,9 +113,7 @@ const deleteProduct = async (id) => {
     return;
   }
 
-  const response = await axios.delete(
-    `http://localhost:8080/api/product/${id}`
-  );
+  const response = await axios.delete(`${apiBase}/api/product/${id}`);
 
   productList.value = productList.value.filter((product) => product.id !== id);
 };

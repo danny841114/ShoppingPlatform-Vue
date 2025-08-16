@@ -68,7 +68,8 @@
         <img
           id="preview"
           :src="
-            photoPreview || ` http://localhost:8080/product/${productId}/photo`
+            photoPreview ||
+            ` ${apiBase}/api/product/${productId}/photo`
           "
           class="img-thumbnail mb-2"
           style="max-width: 200px"
@@ -104,6 +105,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 /* 商品相關變數 */
 const route = useRoute();
@@ -117,7 +119,7 @@ const photoPreview = ref();
 
 /* 獲取商品資訊 */
 const getProduct = async (id) => {
-  const response = await axios.get(`http://localhost:8080/api/product/${id}`);
+  const response = await axios.get(`${apiBase}/api/product/${id}`);
   const data = response.data;
   productName.value = data.name;
   productDescription.value = data.description;
@@ -166,7 +168,7 @@ const modifyProduct = async (id) => {
 
   try {
     const response = await axios.put(
-      `http://localhost:8080/api/product/${id}`,
+      `${apiBase}/api/product/${id}`,
       formData,
       {
         headers: {

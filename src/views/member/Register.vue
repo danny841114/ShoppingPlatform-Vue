@@ -63,6 +63,7 @@
 import { ref, computed } from "vue";
 import axios from "axios";
 import Swal from "sweetalert2";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 // 欄位資料
 const account = ref("");
@@ -116,7 +117,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:8080/api/register", {
+    const response = await axios.post(`${apiBase}/api/register`, {
       account: account.value,
       password: password.value,
     });

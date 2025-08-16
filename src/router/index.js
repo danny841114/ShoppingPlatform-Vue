@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/views/Index.vue";
-import Login from "@/views/secure/Login.vue";
-import Register from "@/views/secure/Register.vue";
+import Login from "@/views/member/Login.vue";
+import Register from "@/views/member/Register.vue";
 import AddProduct from "@/views/product/AddProduct.vue";
 import ManageProduct from "@/views/product/ManageProduct.vue";
 import ModifyProduct from "@/views/product/ModifyProduct.vue";
@@ -16,12 +16,12 @@ const router = createRouter({
       alias: "/index",
     },
     {
-      path: "/secure/login",
+      path: "/member/login",
       name: "Login",
       component: Login,
     },
     {
-      path: "/secure/register",
+      path: "/member/register",
       name: "Register",
       component: Register,
     },

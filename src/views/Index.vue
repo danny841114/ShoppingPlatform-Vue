@@ -52,7 +52,7 @@
       >
         <div class="card" style="width: 18rem">
           <img
-            :src="`http://localhost:8080/product/${product.id}/photo`"
+            :src="`${apiBase}/product/${product.id}/photo`"
             class="card-img-top p-4"
             alt="Product Image"
             @error="
@@ -74,6 +74,7 @@
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 const productList = ref([]);
 const route = useRoute();
@@ -86,16 +87,13 @@ const totalElements = ref();
 const getProductList = async () => {
   if (keyword.value) {
     // 若有關鍵字，走搜尋邏輯
-    const response = await axios.get(
-      "http://localhost:8080/api/product/filter",
-      {
-        params: {
-          size: 12,
-          page: 0,
-          keyword: keyword.value,
-        },
-      }
-    );
+    const response = await axios.get(`${apiBase}/api/product/filter`, {
+      params: {
+        size: 12,
+        page: 0,
+        keyword: keyword.value,
+      },
+    });
     pageSize.value = 12;
     currentPage.value = 0;
     productList.value = response.data.products;
@@ -103,14 +101,14 @@ const getProductList = async () => {
     totalElements.value = response.data.totalElements;
   } else {
     // 無關鍵字，載入全部
-    const response = await axios.get("http://localhost:8080/api/product");
+    const response = await axios.get(`${apiBase}/api/product`);
     productList.value = response.data;
     totalElements.value = response.data.length;
   }
 };
 
 const handlePage = async () => {
-  const response = await axios.get("http://localhost:8080/api/product/filter", {
+  const response = await axios.get(`${apiBase}/api/product/filter`, {
     params: {
       size: pageSize.value,
       page: currentPage.value,

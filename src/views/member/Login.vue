@@ -40,6 +40,7 @@
 import { ref } from "vue";
 import axios from "axios";
 import Swal from "sweetalert2";
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 const account = ref("");
 const password = ref("");
@@ -47,7 +48,7 @@ const errorMsg = ref("");
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post("http://localhost:8080/api/login", {
+    const response = await axios.post(`${apiBase}/api/login`, {
       account: account.value,
       password: password.value,
     });
