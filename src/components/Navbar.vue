@@ -54,18 +54,18 @@
             <a class="nav-link active" aria-current="page" href="/">首頁</a>
           </li>
           <li class="nav-item" v-if="!isLogin">
-            <a class="nav-link" href="/secure/login">登入</a>
+            <a class="nav-link" href="/member/login">登入</a>
           </li>
           <li class="nav-item" v-if="!isLogin">
-            <a class="nav-link" href="/secure/register">註冊</a>
+            <a class="nav-link" href="/member/register">註冊</a>
           </li>
           <li class="nav-item" v-if="isLogin">
             <span class="nav-link disabled">{{ account }}</span>
           </li>
-          <li class="nav-item" v-if="role == 'ADMIN'">
+          <li class="nav-item" v-if="role == 'VENDOR'">
             <a class="nav-link" href="/product/add">上架商品</a>
           </li>
-          <li class="nav-item" v-if="role == 'ADMIN'">
+          <li class="nav-item" v-if="role == 'VENDOR'">
             <a class="nav-link" href="/product/manage">管理商品</a>
           </li>
           <li class="nav-item" v-if="isLogin">
