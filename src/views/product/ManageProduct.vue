@@ -47,9 +47,12 @@
             />
           </td>
           <td class="align-middle text-center">
-            <a class="btn btn-success" @click="modifyProduct(product.id)"
-              >修改</a
+            <router-link
+              class="btn btn-success"
+              :to="{ path: '/product/modify', query: { id: product.id } }"
             >
+              修改
+            </router-link>
             <a
               type="button"
               class="btn btn-danger"
@@ -66,18 +69,17 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
-const router = useRouter();
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productList = ref([]);
 
 /* 獲取 Cookie */
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
+
   if (parts.length === 2) return parts.pop().split(";").shift();
   return null;
 }
@@ -94,11 +96,6 @@ const getProductList = async () => {
 };
 onMounted(getProductList);
 
-/* 修改商品 */
-const modifyProduct = async (id) => {
-  router.push({ path: "/product/modify", query: { id } });
-};
-
 /* 刪除商品 */
 const deleteProduct = async (id) => {
   const ask = await Swal.fire({
@@ -109,6 +106,7 @@ const deleteProduct = async (id) => {
     confirmButtonText: "確認",
     cancelButtonText: "返回",
   });
+
   if (!ask.isConfirmed) {
     return;
   }

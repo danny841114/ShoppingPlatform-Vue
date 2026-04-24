@@ -16,6 +16,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="name">名稱</label>
         <input
+          id="name"
           type="text"
           class="form-control"
           v-model="productName"
@@ -27,6 +28,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="description">描述</label>
         <textarea
+          id="description"
           class="form-control"
           rows="3"
           v-model="productDescription"
@@ -37,6 +39,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="price">價格</label>
         <input
+          id="price"
           type="number"
           class="form-control"
           min="1"
@@ -49,6 +52,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="quantity">數量</label>
         <input
+          id="quantity"
           type="number"
           class="form-control"
           min="1"
@@ -60,41 +64,34 @@
       <!-- 商品圖片 -->
       <div class="input-group mb-3">
         <label class="input-group-text" for="photo">圖片</label>
-        <input type="file" class="form-control" @change="handlePhotoChange" />
+        <input
+          id="photo"
+          type="file"
+          class="form-control"
+          @change="handlePhotoChange"
+        />
       </div>
 
       <!-- 圖片預覽 -->
       <div>
         <img
           id="preview"
-          :src="
-            photoPreview ||
-            ` ${apiBase}/api/product/${productId}/photo`
-          "
+          :src="photoPreview || ` ${apiBase}/api/product/${productId}/photo`"
           class="img-thumbnail mb-2"
           style="max-width: 200px"
           alt="商品圖片"
         />
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-        @click="modifyProduct(productId)"
-      >
-        送出
-      </button>
-      <a
-        class="btn btn-secondary"
-        @click="getProduct(productId)"
-        style="margin-left: 10px"
+      <button type="submit" class="btn btn-primary">送出</button>
+      <a class="btn btn-secondary" @click="getProduct" style="margin-left: 10px"
         >重設</a
       >
-      <a
+      <router-link
         class="btn btn-secondary"
-        href="/product/manage"
+        to="/product/manage"
         style="margin-left: 10px"
-        >返回</a
+        >返回</router-link
       >
     </form>
   </div>
@@ -102,12 +99,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
-/* 商品相關變數 */
+const apiBase = import.meta.env.VITE_API_BASE_URL;
+const router = useRouter();
 const route = useRoute();
 const productId = route.query?.id;
 const productName = ref();
@@ -118,8 +115,8 @@ const productPhoto = ref();
 const photoPreview = ref();
 
 /* 獲取商品資訊 */
-const getProduct = async (id) => {
-  const response = await axios.get(`${apiBase}/api/product/${id}`);
+const getProduct = async () => {
+  const response = await axios.get(`${apiBase}/api/product/${productId}`);
   const data = response.data;
   productName.value = data.name;
   productDescription.value = data.description;
@@ -127,7 +124,7 @@ const getProduct = async (id) => {
   productQuantity.value = data.quantity;
   productPhoto.value = data.photo;
 };
-onMounted(() => getProduct(productId)); // 傳入一個「函式」，不是執行一個函式的結果
+onMounted(() => getProduct()); // 傳入一個「函式」，不是執行一個函式的結果
 
 /* 追蹤上傳圖片 */
 const handlePhotoChange = (event) => {
@@ -144,7 +141,7 @@ const handlePhotoChange = (event) => {
 };
 
 /* 修改商品 */
-const modifyProduct = async (id) => {
+const modifyProduct = async () => {
   const formData = new FormData();
   formData.append("name", productName.value);
   formData.append("description", productDescription.value);
@@ -168,21 +165,19 @@ const modifyProduct = async (id) => {
 
   try {
     const response = await axios.put(
-      `${apiBase}/api/product/${id}`,
+      `${apiBase}/api/product/${productId}`,
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
-    window.location.href = "/product/manage";
+    router.push("/product/manage");
   } catch (error) {
     console.error("修改商品失敗:", error);
   }
 };
-
-/* 重設商品 */
 </script>
 
 <style></style>

@@ -12,7 +12,7 @@
     "
   >
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">電商平台</a>
+      <span class="navbar-brand">電商平台</span>
 
       <button
         class="navbar-toggler"
@@ -51,25 +51,35 @@
 
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">首頁</a>
+            <router-link class="nav-link active" aria-current="page" to="/"
+              >首頁</router-link
+            >
           </li>
           <li class="nav-item" v-if="!isLogin">
-            <a class="nav-link" href="/member/login">登入</a>
+            <router-link class="nav-link" to="/member/login">登入</router-link>
           </li>
           <li class="nav-item" v-if="!isLogin">
-            <a class="nav-link" href="/member/register">註冊</a>
+            <router-link class="nav-link" to="/member/register"
+              >註冊</router-link
+            >
           </li>
           <li class="nav-item" v-if="isLogin">
             <span class="nav-link disabled">{{ account }}</span>
           </li>
           <li class="nav-item" v-if="role == 'VENDOR'">
-            <a class="nav-link" href="/product/add">上架商品</a>
+            <router-link class="nav-link" to="/product/add"
+              >上架商品</router-link
+            >
           </li>
           <li class="nav-item" v-if="role == 'VENDOR'">
-            <a class="nav-link" href="/product/manage">管理商品</a>
+            <router-link class="nav-link" to="/product/manage"
+              >管理商品</router-link
+            >
           </li>
           <li class="nav-item" v-if="isLogin">
-            <a class="nav-link" @click="logout" style="cursor: pointer">登出</a>
+            <span class="nav-link" @click="logout" style="cursor: pointer"
+              >登出</span
+            >
           </li>
         </ul>
       </div>
@@ -86,13 +96,10 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-/* 登入相關變數 */
+const router = useRouter();
 const isLogin = ref(false);
 const account = ref("");
 const role = ref("");
-
-/* 搜尋相關變數 */
-const router = useRouter();
 const pageSize = ref(0);
 const currentPage = ref(0);
 const keyword = ref("");
@@ -140,7 +147,7 @@ const logout = async () => {
     const response = await axios.post(
       "http://localhost:8080/api/logout",
       null,
-      { withCredentials: true }
+      { withCredentials: true },
     );
     console.log(response);
 
@@ -151,7 +158,7 @@ const logout = async () => {
       confirmButtonText: "確定",
     });
 
-    window.location.href = "/";
+    router.replace("/");
   } catch (error) {
     console.log(error);
   }

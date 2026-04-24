@@ -6,6 +6,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="name">名稱</label>
         <input
+          id="name"
           type="text"
           class="form-control"
           v-model="productName"
@@ -17,6 +18,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="description">描述</label>
         <textarea
+          id="description"
           class="form-control"
           rows="3"
           v-model="productDescription"
@@ -27,6 +29,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="price">價格</label>
         <input
+          id="price"
           type="number"
           class="form-control"
           min="1"
@@ -39,6 +42,7 @@
       <div class="input-group mb-3">
         <label class="input-group-text" for="quantity">數量</label>
         <input
+          id="quantity"
           type="number"
           class="form-control"
           min="1"
@@ -50,36 +54,38 @@
       <!-- 商品圖片 -->
       <div class="input-group mb-3">
         <label class="input-group-text" for="photo">圖片</label>
-        <input type="file" class="form-control" @change="handlePhotoChange" />
+        <input
+          id="photo"
+          type="file"
+          class="form-control"
+          @change="handlePhotoChange"
+        />
       </div>
 
-      <button type="submit" class="btn btn-primary" @click="addProduct">
-        送出
-      </button>
-      <a
+      <button type="submit" class="btn btn-primary">送出</button>
+      <router-link
         class="btn btn-secondary"
-        href="/product/manage"
+        to="/product/manage"
         style="margin-left: 10px"
-        >返回</a
+        >返回</router-link
       >
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
-/* 商品相關變數 */
+const router = useRouter();
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productName = ref();
 const productDescription = ref();
 const productPrice = ref();
 const productQuantity = ref();
 const productPhoto = ref(null);
-
-/* 登入相關變數 */
 const isLogin = ref(false);
 const account = ref("");
 const role = ref("");
@@ -155,7 +161,7 @@ const addProduct = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    window.location.href = "/product/manage";
+    router.push("/product/manage");
   } catch (error) {
     console.error("新增商品失敗:", error);
   }

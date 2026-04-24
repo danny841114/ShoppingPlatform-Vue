@@ -61,16 +61,15 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
-// 欄位資料
+const apiBase = import.meta.env.VITE_API_BASE_URL;
+const router = useRouter();
 const account = ref("");
 const password = ref("");
 const passwordConfirm = ref("");
-
-// 是否已經編輯過（焦點離開後才顯示錯誤訊息）
 const accountTouched = ref(false);
 const passwordTouched = ref(false);
 const passwordConfirmTouched = ref(false);
@@ -130,7 +129,7 @@ const handleSubmit = async () => {
       confirmButtonText: "確定",
     });
 
-    window.location.href = "/";
+    router.push("/");
   } catch (error) {
     console.error("註冊失敗", error);
     Swal.fire({

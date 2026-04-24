@@ -74,8 +74,8 @@
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productList = ref([]);
 const route = useRoute();
 const pageSize = ref(0);
@@ -139,7 +139,7 @@ watch(
     pageSize.value = Number(route.query.size || 5);
     keyword.value = route.query.keyword || "";
     getProductList();
-  }
+  },
 );
 </script>
 

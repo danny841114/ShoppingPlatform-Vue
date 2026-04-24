@@ -7,8 +7,9 @@
     <div>
       <form @submit.prevent="handleLogin">
         <div class="input-group mb-3">
-          <span class="input-group-text">帳號</span>
+          <label class="input-group-text" for="account">帳號</label>
           <input
+            id="account"
             type="text"
             class="form-control"
             aria-label="account"
@@ -18,8 +19,9 @@
         </div>
 
         <div class="input-group mb-3">
-          <span class="input-group-text">密碼</span>
+          <label class="input-group-text" for="password">密碼</label>
           <input
+            id="password"
             type="password"
             class="form-control"
             aria-label="account"
@@ -38,10 +40,12 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 
+const apiBase = import.meta.env.VITE_API_BASE_URL;
+const router = useRouter();
 const account = ref("");
 const password = ref("");
 const errorMsg = ref("");
@@ -64,7 +68,7 @@ const handleLogin = async () => {
       confirmButtonText: "確定",
     });
 
-    window.location.href = "/";
+    router.replace("/product/manage");
   } catch (error) {
     errorMsg.value = error.response.data.message;
     await Swal.fire({
