@@ -55,28 +55,28 @@
               >首頁</router-link
             >
           </li>
-          <li class="nav-item" v-if="!isLogin">
+          <li class="nav-item" v-if="!authStore.account">
             <router-link class="nav-link" to="/member/login">登入</router-link>
           </li>
-          <li class="nav-item" v-if="!isLogin">
+          <li class="nav-item" v-if="!authStore.account">
             <router-link class="nav-link" to="/member/register"
               >註冊</router-link
             >
           </li>
-          <li class="nav-item" v-if="isLogin">
-            <span class="nav-link disabled">{{ account }}</span>
+          <li class="nav-item" v-if="authStore.account">
+            <span class="nav-link disabled">{{ authStore.account }}</span>
           </li>
-          <li class="nav-item" v-if="role == 'VENDOR'">
+          <li class="nav-item" v-if="authStore.role === 'VENDOR'">
             <router-link class="nav-link" to="/product/add"
               >上架商品</router-link
             >
           </li>
-          <li class="nav-item" v-if="role == 'VENDOR'">
+          <li class="nav-item" v-if="authStore.role === 'VENDOR'">
             <router-link class="nav-link" to="/product/manage"
               >管理商品</router-link
             >
           </li>
-          <li class="nav-item" v-if="isLogin">
+          <li class="nav-item" v-if="authStore.account">
             <span class="nav-link" @click="logout" style="cursor: pointer"
               >登出</span
             >
@@ -93,63 +93,23 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 const router = useRouter();
-const isLogin = ref(false);
-const account = ref("");
-const role = ref("");
-const pageSize = ref(0);
-const currentPage = ref(0);
+const authStore = useAuthStore();
 const keyword = ref("");
-const totalPages = ref(1);
-const totalElements = ref();
-
-/* 獲取 Cookie */
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
-}
-
-/* 解析 JWT */
-function parseJwt(token) {
-  try {
-    const payload = token.split(".")[1];
-    const decoded = atob(payload);
-    return JSON.parse(decoded);
-  } catch (e) {
-    return null;
-  }
-}
-
-/* 取得使用者資訊 */
-function getAccount() {
-  const jwt = getCookie("jwt");
-  if (jwt) {
-    const payload = parseJwt(jwt);
-    if (payload) {
-      isLogin.value = true;
-      account.value = payload.sub || "";
-      role.value = payload.role || "";
-    }
-    console.log(payload);
-  }
-}
-
-onMounted(getAccount);
 
 /* 登出 */
 const logout = async () => {
   try {
-    const response = await axios.post(
-      "http://localhost:8080/api/logout",
-      null,
-      { withCredentials: true },
-    );
-    console.log(response);
+    const response = await axios.post(`${apiBase}/api/logout`, null, {
+      withCredentials: true,
+    });
+
+    authStore.logout();
 
     await Swal.fire({
       title: "登出成功",

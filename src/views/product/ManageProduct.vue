@@ -88,9 +88,7 @@ const jwt = getCookie("jwt");
 /* 獲取商品列表 */
 const getProductList = async () => {
   const response = await axios.get(`${apiBase}/api/product/vendor`, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-    },
+    withCredentials: true,
   });
   productList.value = response.data;
 };

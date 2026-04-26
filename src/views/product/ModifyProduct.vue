@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-5">
     <h3>修改商品</h3>
-    <form @submit.prevent="addProduct">
+    <form @submit.prevent="modifyProduct">
       <!-- 商品ID -->
       <div class="input-group mb-3">
         <input
@@ -159,6 +159,7 @@ const modifyProduct = async () => {
     confirmButtonText: "確認",
     cancelButtonText: "返回",
   });
+
   if (!ask.isConfirmed) {
     return;
   }

@@ -86,41 +86,6 @@ const productDescription = ref();
 const productPrice = ref();
 const productQuantity = ref();
 const productPhoto = ref(null);
-const isLogin = ref(false);
-const account = ref("");
-const role = ref("");
-
-/* 獲取 Cookie */
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
-}
-
-/* 解析 JWT */
-function parseJwt(token) {
-  try {
-    const payload = token.split(".")[1];
-    const decoded = atob(payload);
-    return JSON.parse(decoded);
-  } catch (e) {
-    return null;
-  }
-}
-
-/* 取得使用者資訊 */
-function getAccount() {
-  const jwt = getCookie("jwt");
-  if (jwt) {
-    const payload = parseJwt(jwt);
-    if (payload) {
-      isLogin.value = true;
-      account.value = payload.sub || "";
-      role.value = payload.role || "";
-    }
-  }
-}
 
 /* 追蹤上傳圖片 */
 const handlePhotoChange = (event) => {
@@ -141,7 +106,6 @@ const addProduct = async () => {
     formData.append("photo", productPhoto.value);
   }
 
-  const jwt = getCookie("jwt");
   const ask = await Swal.fire({
     title: "確定新增？",
     icon: "warning",
@@ -150,16 +114,14 @@ const addProduct = async () => {
     confirmButtonText: "確認",
     cancelButtonText: "返回",
   });
+
   if (!ask.isConfirmed) {
     return;
   }
 
   try {
     const response = await axios.post(`${apiBase}/api/product`, formData, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        "Content-Type": "multipart/form-data",
-      },
+      withCredentials: true,
     });
     router.push("/product/manage");
   } catch (error) {

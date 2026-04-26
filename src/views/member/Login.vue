@@ -41,25 +41,32 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const router = useRouter();
+const authStore = useAuthStore();
 const account = ref("");
 const password = ref("");
 const errorMsg = ref("");
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post(`${apiBase}/api/login`, {
-      account: account.value,
-      password: password.value,
-    });
-    const result = response.data;
-    console.log(result);
+    const response = await axios.post(
+      `${apiBase}/api/login`,
+      {
+        account: account.value,
+        password: password.value,
+      },
+      { withCredentials: true },
+    );
 
-    document.cookie = "jwt=" + result.token + "; path=/";
+    authStore.setLogin({
+      account: response.data.account,
+      role: response.data.role,
+    });
 
     await Swal.fire({
       title: "登入成功",
