@@ -169,9 +169,7 @@ const modifyProduct = async () => {
       `${apiBase}/api/product/${productId}`,
       formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        withCredentials: true,
       },
     );
     router.push("/product/manage");
