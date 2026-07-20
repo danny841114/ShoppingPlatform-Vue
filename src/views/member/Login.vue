@@ -75,7 +75,7 @@ const handleLogin = async () => {
       confirmButtonText: "確定",
     });
 
-    router.replace("/product/manage");
+    router.replace("/index");
   } catch (error) {
     errorMsg.value = error.response.data.message;
     await Swal.fire({
