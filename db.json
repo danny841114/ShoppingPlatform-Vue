@@ -1,6 +1,50 @@
 {
-    "users":[
-        {"account":"user1","password":"12345678","role":"USER"},
-        {"account":"user2","password":"12345678","role":"VENDOR"}
-    ]
+  "users": [
+    { "account": "user1", "password": "12345678", "role": "USER" },
+    { "account": "user2", "password": "12345678", "role": "VENDOR" }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "washing machine",
+      "description": "very good",
+      "price": 50000,
+      "quantity": 100
+    },
+    {
+      "id": 2,
+      "name": "cellphone",
+      "description": "useful",
+      "price": 25000,
+      "quantity": 999
+    },
+    {
+      "id": 3,
+      "name": "washing machine",
+      "description": "very good",
+      "price": 50000,
+      "quantity": 100
+    },
+    {
+      "id": 4,
+      "name": "cellphone",
+      "description": "useful",
+      "price": 25000,
+      "quantity": 999
+    },
+    {
+      "id": 5,
+      "name": "washing machine",
+      "description": "very good",
+      "price": 50000,
+      "quantity": 100
+    },
+    {
+      "id": 6,
+      "name": "cellphone",
+      "description": "useful",
+      "price": 25000,
+      "quantity": 999
+    }
+  ]
 }

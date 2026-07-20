@@ -77,6 +77,46 @@ server.post("/api/logout", (req, res) => {
   });
 });
 
+server.get("/api/product/filter", (req, res) => {
+  try {
+    const size = parseInt(req.query.size) || 10;
+    const page = parseInt(req.query.page) || 0;
+    const keyword = String(req.query.keyword) || "";
+
+    const db = router.db;
+    let products = db.get("products").value() || [];
+
+    if (keyword) {
+      products = products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          p.description.toLowerCase().includes(keyword.toLowerCase())
+      );
+    }
+
+    const totalElements = products.length;
+    const totalPages = Math.ceil(totalElements / size);
+
+    const start = page * size;
+    const end = start + size;
+    const paginatedProducts = products.slice(start, end);
+
+    res.jsonp({
+      totalPages: totalPages,
+      totalElements,
+      totalElements,
+      page: page,
+      size: size,
+      products: paginatedProducts,
+    });
+  } catch (e) {
+    console.error("Internal serror error", e);
+    res.status(500).json({
+      message: "Internal Serror Error",
+    });
+  }
+});
+
 server.use(router);
 server.listen(3000, () => {
   console.log("Mock server is running on http://localhost:3000");
