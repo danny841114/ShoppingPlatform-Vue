@@ -187,17 +187,4 @@ watch(
 );
 </script>
 
-<style scoped>
-/* 限制多行文字截斷 (...) 的通用 CSS */
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}</style>
+<style scoped></style>
