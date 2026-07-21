@@ -162,6 +162,11 @@ const addProduct = async () => {
     router.push("/product/manage");
   } catch (error) {
     console.error("新增商品失敗:", error);
+    Swal.fire({
+      title: "新增失敗",
+      icon: "error",
+      confirmButtonText: "確定",
+    });
   }
 };
 </script>

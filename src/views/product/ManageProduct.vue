@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto mt-8 px-4 max-w-6xl">
     <h3 class="mb-6 text-2xl font-bold text-gray-800">管理商品</h3>
-    
+
     <!-- 表格外框與響應式橫向滾動區塊 -->
     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
       <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
@@ -18,11 +18,8 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 border-t border-gray-200">
-          <tr
-            v-for="(product, index) in productList"
-            :key="product.id || index"
-            class="h-24 hover:bg-gray-50 transition-colors"
-          >
+          <tr v-for="(product, index) in productList" :key="product.id || index"
+            class="h-24 hover:bg-gray-50 transition-colors">
             <!-- 序號 -->
             <th class="px-4 py-2 text-center font-medium text-gray-900" scope="row">
               {{ index + 1 }}
@@ -44,14 +41,10 @@
             <!-- 圖片 -->
             <td class="px-4 py-2 text-center">
               <div class="flex items-center justify-center">
-                <img
-                  :src="`${apiBase}/api/product/${product.id}/photo`"
-                  alt="商品圖片"
-                  class="h-20 w-20 object-contain rounded border border-gray-100 bg-gray-50"
-                  @error="
+                <img :src="`${apiBase}/api/product/${product.id}/photo`" alt="商品圖片"
+                  class="h-20 w-20 object-contain rounded border border-gray-100 bg-gray-50" @error="
                     (event) => (event.target.src = '/images/no_image_available.jpg')
-                  "
-                />
+                  " />
               </div>
             </td>
 
@@ -60,15 +53,12 @@
               <div class="flex items-center justify-center gap-2">
                 <router-link
                   class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
-                  :to="{ path: '/product/modify', query: { id: product.id } }"
-                >
+                  :to="{ path: '/product/modify', query: { id: product.id } }">
                   修改
                 </router-link>
-                <button
-                  type="button"
+                <button type="button"
                   class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
-                  @click="deleteProduct(product.id)"
-                >
+                  @click="deleteProduct(product.id)">
                   刪除
                 </button>
               </div>
@@ -136,9 +126,9 @@ const deleteProduct = async (id) => {
       timer: 1500,
       showConfirmButton: false,
     });
-  } catch (e) {
+  } catch (error) {
     console.error("刪除失敗", error);
-    const errMsg = e.response?.data?.message || "刪除商品失敗，請稍後再試";
+    const errMsg = error.response?.data?.message || "刪除商品失敗，請稍後再試";
     Swal.fire({
       title: "刪除失敗",
       text: errMsg,

@@ -207,6 +207,11 @@ const modifyProduct = async () => {
     router.push("/product/manage");
   } catch (error) {
     console.error("修改商品失敗:", error);
+    Swal.fire({
+      title: "更新失敗",
+      icon: "error",
+      confirmButtonText: "確定",
+    });
   }
 };
 </script>

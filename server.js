@@ -77,7 +77,7 @@ server.post("/api/logout", (req, res) => {
   });
 });
 
-server.get("/api/product/filter", (req, res) => {
+server.get("/api/product", (req, res) => {
   try {
     const size = parseInt(req.query.size) || 10;
     const page = parseInt(req.query.page) || 0;
@@ -90,7 +90,7 @@ server.get("/api/product/filter", (req, res) => {
       products = products.filter(
         (p) =>
           p.name.toLowerCase().includes(keyword.toLowerCase()) ||
-          p.description.toLowerCase().includes(keyword.toLowerCase())
+          p.description.toLowerCase().includes(keyword.toLowerCase()),
       );
     }
 
@@ -120,7 +120,6 @@ server.get("/api/product/filter", (req, res) => {
 const rewriter = jsonServer.rewriter({
   "/api/product/vendor": "/products",
   "/api/product/:id": "/products/:id",
-  "/api/product": "/products",
 });
 server.use(rewriter);
 

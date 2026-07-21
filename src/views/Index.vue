@@ -5,7 +5,9 @@
       <div>
         <h1 class="text-2xl font-bold text-gray-800">商品列表</h1>
         <p v-if="totalElements" class="text-sm text-gray-500 mt-1">
-          總共有 <span class="font-semibold text-blue-600">{{ totalElements }}</span> 個商品
+          總共有
+          <span class="font-semibold text-blue-600">{{ totalElements }}</span>
+          個商品
           <span v-if="keyword" class="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
             搜尋：「{{ keyword }}」
           </span>
@@ -30,7 +32,7 @@
         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col justify-between group">
         <!-- 商品圖片區 -->
         <div class="w-full h-48 bg-gray-50 overflow-hidden relative">
-          <img :src="`${apiBase}/product/${product.id}/photo`" :alt="product.name"
+          <img :src="`${apiBase}/api/product/${product.id}/photo`" :alt="product.name"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             @error="onImageError" />
         </div>
@@ -50,7 +52,7 @@
           <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
             <span>賣家</span>
             <span class="font-medium text-gray-600">
-              👤 {{ product.vendor?.account || '官方賣家' }}
+              👤 {{ product.vendor?.account || "官方賣家" }}
             </span>
           </div>
         </div>
@@ -118,30 +120,22 @@ const totalPages = ref(1);
 const totalElements = ref();
 
 const getProductList = async () => {
-  if (keyword.value) {
-    // 若有關鍵字，走搜尋邏輯
-    const response = await axios.get(`${apiBase}/api/product/filter`, {
-      params: {
-        size: 12,
-        page: 0,
-        keyword: keyword.value,
-      },
-    });
-    pageSize.value = 12;
-    currentPage.value = 0;
-    productList.value = response.data.products;
-    totalPages.value = response.data.totalPages;
-    totalElements.value = response.data.totalElements;
-  } else {
-    // 無關鍵字，載入全部
-    const response = await axios.get(`${apiBase}/api/product`);
-    productList.value = response.data;
-    totalElements.value = response.data.length;
-  }
+  const response = await axios.get(`${apiBase}/api/product`, {
+    params: {
+      size: 12,
+      page: 0,
+      keyword: keyword.value,
+    },
+  });
+  pageSize.value = 12;
+  currentPage.value = 0;
+  productList.value = response.data.products;
+  totalPages.value = response.data.totalPages;
+  totalElements.value = response.data.totalElements;
 };
 
 const handlePage = async () => {
-  const response = await axios.get(`${apiBase}/api/product/filter`, {
+  const response = await axios.get(`${apiBase}/api/product`, {
     params: {
       size: pageSize.value,
       page: currentPage.value,
