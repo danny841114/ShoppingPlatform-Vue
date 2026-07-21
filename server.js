@@ -3,11 +3,11 @@ import cookieParser from "cookie-parser";
 
 const server = jsonServer.create();
 const router = jsonServer.router("db.json");
-const middlewares = jsonServer.defaults();
+const middlewares = jsonServer.defaults(); // 靜態檔案分析，CORS 跨域支援，日誌支援
 
 server.use(middlewares);
 server.use(cookieParser());
-server.use(jsonServer.bodyParser); // parser for POST request
+server.use(jsonServer.bodyParser); // parser for request body
 
 server.post("/api/login", (req, res) => {
   try {
@@ -116,6 +116,9 @@ server.get("/api/product/filter", (req, res) => {
     });
   }
 });
+
+const rewriter = jsonServer.rewriter({ "/api/product": "/products" });
+server.use(rewriter);
 
 server.use(router);
 server.listen(3000, () => {
