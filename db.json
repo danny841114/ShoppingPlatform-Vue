@@ -6,45 +6,143 @@
   "products": [
     {
       "id": 1,
-      "name": "washing machine",
-      "description": "very good",
-      "price": 50000,
-      "quantity": 100
+      "name": "laptop",
+      "description": "high performance",
+      "price": 42000,
+      "quantity": 50
     },
     {
       "id": 2,
-      "name": "cellphone",
-      "description": "useful",
-      "price": 25000,
-      "quantity": 999
+      "name": "wireless headphones",
+      "description": "noise canceling",
+      "price": 6800,
+      "quantity": 200
     },
     {
       "id": 3,
-      "name": "washing machine",
-      "description": "very good",
-      "price": 50000,
-      "quantity": 100
+      "name": "smartwatch",
+      "description": "fitness tracking",
+      "price": 8900,
+      "quantity": 150
     },
     {
       "id": 4,
-      "name": "cellphone",
-      "description": "useful",
-      "price": 25000,
-      "quantity": 999
+      "name": "refrigerator",
+      "description": "double door energy saving",
+      "price": 38000,
+      "quantity": 30
     },
     {
       "id": 5,
-      "name": "washing machine",
-      "description": "very good",
-      "price": 50000,
-      "quantity": 100
+      "name": "air conditioner",
+      "description": "cools quickly",
+      "price": 29000,
+      "quantity": 45
     },
     {
       "id": 6,
-      "name": "cellphone",
-      "description": "useful",
-      "price": 25000,
-      "quantity": 999
+      "name": "microwave oven",
+      "description": "easy to use",
+      "price": 3500,
+      "quantity": 120
+    },
+    {
+      "id": 7,
+      "name": "coffee maker",
+      "description": "automatic espresso",
+      "price": 15000,
+      "quantity": 80
+    },
+    {
+      "id": 8,
+      "name": "vacuum cleaner",
+      "description": "powerful suction",
+      "price": 12000,
+      "quantity": 90
+    },
+    {
+      "id": 9,
+      "name": "4K TV",
+      "description": "ultra HD display",
+      "price": 32000,
+      "quantity": 60
+    },
+    {
+      "id": 10,
+      "name": "air purifier",
+      "description": "HEPA filter included",
+      "price": 7500,
+      "quantity": 110
+    },
+    {
+      "id": 11,
+      "name": "electric toothbrush",
+      "description": "deep clean mode",
+      "price": 2200,
+      "quantity": 300
+    },
+    {
+      "id": 12,
+      "name": "gaming console",
+      "description": "next gen graphics",
+      "price": 17500,
+      "quantity": 70
+    },
+    {
+      "id": 13,
+      "name": "bluetooth speaker",
+      "description": "waterproof design",
+      "price": 3100,
+      "quantity": 250
+    },
+    {
+      "id": 14,
+      "name": "hair dryer",
+      "description": "fast drying ionic tech",
+      "price": 4500,
+      "quantity": 180
+    },
+    {
+      "id": 15,
+      "name": "mechanical keyboard",
+      "description": "RGB backlit switches",
+      "price": 3900,
+      "quantity": 140
+    },
+    {
+      "id": 16,
+      "name": "gaming mouse",
+      "description": "high precision DPI",
+      "price": 1800,
+      "quantity": 220
+    },
+    {
+      "id": 17,
+      "name": "tablet",
+      "description": "lightweight for reading",
+      "price": 16000,
+      "quantity": 85
+    },
+    {
+      "id": 18,
+      "name": "electric kettle",
+      "description": "quick boiling",
+      "price": 1200,
+      "quantity": 400
+    },
+    {
+      "id": 19,
+      "name": "dish washer",
+      "description": "high temperature sterilize",
+      "price": 26000,
+      "quantity": 25
+    },
+    {
+      "id": 20,
+      "name": "action camera",
+      "description": "4K stabilization video",
+      "price": 11000,
+      "quantity": 95
     }
   ]
 }

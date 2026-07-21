@@ -1,93 +1,136 @@
 <template>
-  <nav
-    class="navbar navbar-expand-lg navbar-dark bg-dark"
-    style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: white;
-      z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    "
-  >
-    <div class="container-fluid">
-      <span class="navbar-brand">電商平台</span>
+  <nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-6">
+          <span class="text-xl font-bold text-gray-800 hover:text-blue-600 transition">
+            電商平台
+          </span>
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form @submit.prevent="searchProducts">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="搜尋商品"
-                aria-label="Search"
-                v-model="keyword"
-                required
-              />
-            </li>
-            <li class="nav-item">&emsp;</li>
-            <li class="nav-item">
-              <button class="btn btn-outline-success" type="submit">
+          <div class="hidden md:flex items-center space-x-2">
+            <form @submit.prevent="searchProducts" class="hidden sm:flex items-center space-x-2 flex-1 max-w-xs mx-4">
+              <input type="search" placeholder="搜尋商品" v-model.trim="keyword" required
+                class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+              <button type="submit"
+                class="px-3 py-1.5 border border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white text-sm font-medium rounded-lg transition whitespace-nowrap">
                 搜尋
               </button>
-            </li>
-            <li class="nav-item">&emsp;</li>
-          </ul>
-        </form>
+            </form>
 
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link class="nav-link active" aria-current="page" to="/"
-              >首頁</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="!authStore.account">
-            <router-link class="nav-link" to="/member/login">登入</router-link>
-          </li>
-          <li class="nav-item" v-if="!authStore.account">
-            <router-link class="nav-link" to="/member/register"
-              >註冊</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="authStore.account">
-            <span class="nav-link disabled">{{ authStore.account }}</span>
-          </li>
-          <li class="nav-item" v-if="authStore.role === 'VENDOR'">
-            <router-link class="nav-link" to="/product/add"
-              >上架商品</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="authStore.role === 'VENDOR'">
-            <router-link class="nav-link" to="/product/manage"
-              >管理商品</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="authStore.account">
-            <span class="nav-link" @click="logout" style="cursor: pointer"
-              >登出</span
-            >
-          </li>
-        </ul>
+            <router-link to="/"
+              class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition"
+              active-class="text-blue-600 font-semibold bg-blue-50">
+              首頁
+            </router-link>
+
+            <template v-if="authStore.role === 'VENDOR'">
+              <router-link to="/product/add"
+                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition"
+                active-class="text-blue-600 font-semibold bg-blue-50">
+                上架商品
+              </router-link>
+
+              <router-link to="/product/manage"
+                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition"
+                active-class="text-blue-600 font-semibold bg-blue-50">
+                管理商品
+              </router-link>
+            </template>
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-4">
+          <template v-if="!authStore.account">
+            <router-link to="/member/login" class="text-sm font-medium text-gray-700 hover:text-blue-600 transition">
+              登入
+            </router-link>
+            <router-link to="/member/register"
+              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm">
+              註冊
+            </router-link>
+          </template>
+
+          <template v-else>
+            <span class="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+              👤 {{ authStore.account }}
+            </span>
+            <button @click="logout"
+              class="text-sm font-medium text-red-600 hover:text-red-700 transition focus:outline-none">
+              登出
+            </button>
+          </template>
+        </div>
+
+        <!-- 手機版漢堡選單按鈕 (md 以下顯示) -->
+        <div class="md:hidden flex items-center">
+          <button @click="isOpen = !isOpen" type="button"
+            class="text-gray-600 hover:text-gray-900 focus:outline-none p-2 rounded-md" aria-label="Toggle Navigation">
+            <!-- 漢堡圖示 / 關閉圖示 動態切換 -->
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path v-if="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
       </div>
+    </div>
+
+    <!-- 手機版展開選單 (點擊漢堡按鈕後顯示) -->
+    <div v-show="isOpen" class="md:hidden border-t border-gray-100 px-4 pt-2 pb-4 space-y-2 bg-white shadow-lg">
+      <form @submit.prevent="searchProducts" class="flex items-center space-x-2 my-2">
+        <input type="search" placeholder="搜尋商品..." v-model.trim="keyword" required
+          class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <button type="submit"
+          class="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg whitespace-nowrap">
+          搜尋
+        </button>
+      </form>
+
+      <router-link to="/" @click="isOpen = false"
+        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+        首頁
+      </router-link>
+
+      <template v-if="!authStore.account">
+        <router-link to="/member/login" @click="isOpen = false"
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          登入
+        </router-link>
+
+        <router-link to="/member/register" @click="isOpen = false"
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          註冊
+        </router-link>
+      </template>
+
+      <template v-else>
+        <template v-if="authStore.role === 'VENDOR'">
+          <router-link to="/product/add" @click="isOpen = false"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+            上架商品
+          </router-link>
+
+          <router-link to="/product/manage" @click="isOpen = false"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+            管理商品
+          </router-link>
+        </template>
+
+        <div class="px-3 py-2 text-sm font-medium text-gray-500">
+          帳號：{{ authStore.account }}
+        </div>
+
+        <button @click="() => { logout(); isOpen = false; }"
+          class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">
+          登出
+        </button>
+      </template>
     </div>
   </nav>
 
-  <!-- 這個空 div 用來補足 navbar 高度，避免下方內容被 navbar 擋住 -->
-  <div style="height: 70px"></div>
+  <div class="h-16"></div>
 </template>
 
 <script setup>
@@ -101,6 +144,7 @@ const apiBase = import.meta.env.VITE_API_BASE_URL;
 const router = useRouter();
 const authStore = useAuthStore();
 const keyword = ref("");
+const isOpen = ref(false); // 控制手機版漢堡選單開關
 
 /* 登出 */
 const logout = async () => {
@@ -135,4 +179,4 @@ const searchProducts = () => {
 };
 </script>
 
-<style></style>
+<style scoped></style>
