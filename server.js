@@ -117,7 +117,11 @@ server.get("/api/product/filter", (req, res) => {
   }
 });
 
-const rewriter = jsonServer.rewriter({ "/api/product": "/products" });
+const rewriter = jsonServer.rewriter({
+  "/api/product/vendor": "/products",
+  "/api/product$": "/products", // $ 代表嚴格匹配
+  "/api/product/:id": "/products/:id",
+});
 server.use(rewriter);
 
 server.use(router);
