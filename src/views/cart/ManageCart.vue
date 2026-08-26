@@ -81,16 +81,17 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { debounce } from 'lodash-es'
-import axios from "axios";
+import { cartApi } from "@/api/cartApi";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const cartItems = ref([]);
-
 const localQuantities = reactive({})
+
 const getQuantity = (item) => {
   return localQuantities[item.id] ?? item.quantity
 }
+
 const getSubtotal = (item) => {
   const qty = getQuantity(item)
   return item.product?.price ? item.product.price * qty : item.subtotal
@@ -99,28 +100,18 @@ const getSubtotal = (item) => {
 /* 獲取商品列表 */
 const getCartItems = async () => {
   try {
-    const response = await axios.get(`${apiBase}/api/cart`, {
-      withCredentials: true,
-    });
-    cartItems.value = response.data;
+    cartItems.value = await cartApi.getCartItems()
   } catch (error) {
     console.error("無法取得商品列表", error);
   }
 };
-onMounted(getCartItems);
 
-const updateQuantity = async (id, quantity) => {
+const debouncedUpdateQuantity = debounce(async (id, quantity) => {
   try {
-    await axios.put(`${apiBase}/api/cart/${id}`, { quantity }, {
-      withCredentials: true,
-    });
+    await cartApi.updateCartItemQuantity(id, quantity)
   } catch (error) {
     console.log("更新數量失敗", error)
   }
-}
-
-const debouncedUpdateQuantity = debounce((id, quantity) => {
-  updateQuantity(id, quantity)
 }, 2000)
 
 const changeQuantity = (item, delta) => {
@@ -145,14 +136,12 @@ const deleteProduct = async (id) => {
     cancelButtonText: "返回",
   });
 
-  if (!ask.isConfirmed) {
-    return;
-  }
+  if (!ask.isConfirmed) return;
 
   try {
-    const response = await axios.delete(`${apiBase}/api/product/${id}`, {
-      withCredentials: true,
-    });
+    // await axios.delete(`${apiBase}/api/product/${id}`, {
+    //   withCredentials: true,
+    // });
 
     // productList.value = productList.value.filter((product) => product.id !== id);
 
@@ -173,6 +162,8 @@ const deleteProduct = async (id) => {
     });
   }
 };
+
+onMounted(getCartItems);
 </script>
 
 <style scoped></style>
