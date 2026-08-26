@@ -31,16 +31,18 @@
             <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.product?.price }}</td>
             <td class="px-4 py-2 text-center text-gray-800">
               <button type="button"
-                class="rounded  bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1">
+                class="rounded  bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
+                :disabled="item.quantity <= 1" @click="changeQuantity(item, -1)">
                 -
               </button>
-              &nbsp;{{ item.quantity }}&nbsp;
+              &nbsp;{{ getQuantity(item) }}&nbsp;
               <button type="button"
-                class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1">
+                class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
+                :disabled="getQuantity(item) >= item.product?.quantity" @click="changeQuantity(item, 1)">
                 +
               </button>
             </td>
-            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.subtotal }}</td>
+            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ getSubtotal(item) }}</td>
 
             <!-- 圖片 -->
             <td class="px-4 py-2 text-center">
@@ -77,12 +79,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { debounce } from 'lodash-es'
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const cartItems = ref([]);
+
+const localQuantities = reactive({})
+const getQuantity = (item) => {
+  return localQuantities[item.id] ?? item.quantity
+}
+const getSubtotal = (item) => {
+  const qty = getQuantity(item)
+  return item.product?.price ? item.product.price * qty : item.subtotal
+}
 
 /* 獲取商品列表 */
 const getCartItems = async () => {
@@ -96,6 +108,31 @@ const getCartItems = async () => {
   }
 };
 onMounted(getCartItems);
+
+const updateQuantity = async (id, quantity) => {
+  try {
+    await axios.put(`${apiBase}/api/cart/${id}`, { quantity }, {
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.log("更新數量失敗", error)
+  }
+}
+
+const debouncedUpdateQuantity = debounce((id, quantity) => {
+  updateQuantity(id, quantity)
+}, 2000)
+
+const changeQuantity = (item, delta) => {
+  const currentQty = getQuantity(item)
+  const newQty = currentQty + delta
+
+  if (newQty < 1) return
+
+  localQuantities[item.id] = newQty
+
+  debouncedUpdateQuantity(item.id, newQty)
+}
 
 /* 刪除商品 */
 const deleteProduct = async (id) => {
