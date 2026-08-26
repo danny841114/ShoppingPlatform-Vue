@@ -5,6 +5,7 @@ import Register from "@/views/member/Register.vue";
 import AddProduct from "@/views/product/AddProduct.vue";
 import ManageProduct from "@/views/product/ManageProduct.vue";
 import ModifyProduct from "@/views/product/ModifyProduct.vue";
+import ManageCart from "@/views/cart/ManageCart.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
@@ -57,6 +58,15 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         requiresRole: "VENDOR",
+      },
+    },
+    {
+      path: "/cart",
+      name: "ManageCart",
+      component: ManageCart,
+      meta: {
+        requiresAuth: true,
+        requiresRole: "MEMBER",
       },
     },
   ],
