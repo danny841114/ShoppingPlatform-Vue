@@ -9,16 +9,15 @@
           <tr>
             <th scope="col" class="px-4 py-3 text-center font-semibold">#</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">名稱</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">描述</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">價格</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">數量</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">上架日期</th>
+            <th scope="col" class="px-4 py-3 text-center font-semibold">小計</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">圖片</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">操作</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 border-t border-gray-200">
-          <tr v-for="(product, index) in productList" :key="product.id || index"
+          <tr v-for="(item, index) in cartItems" :key="item.id || index"
             class="h-24 hover:bg-gray-50 transition-colors">
             <!-- 序號 -->
             <th class="px-4 py-2 text-center font-medium text-gray-900" scope="row">
@@ -26,22 +25,17 @@
             </th>
 
             <!-- 名稱與描述 -->
-            <td class="px-4 py-2 text-center text-gray-800">{{ product.name }}</td>
-            <td class="px-4 py-2 text-center text-gray-600 max-w-xs truncate" :title="product.description">
-              {{ product.description }}
-            </td>
+            <td class="px-4 py-2 text-center text-gray-800">{{ item.product?.name }}</td>
 
             <!-- 價格與數量 -->
-            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ product.price }}</td>
-            <td class="px-4 py-2 text-center text-gray-800">{{ product.quantity }}</td>
-
-            <!-- 上架日期 -->
-            <td class="px-4 py-2 text-center text-gray-500 text-xs">{{ product.date }}</td>
+            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.product?.price }}</td>
+            <td class="px-4 py-2 text-center text-gray-800">{{ item.quantity }}</td>
+            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.subtotal }}</td>
 
             <!-- 圖片 -->
             <td class="px-4 py-2 text-center">
               <div class="flex items-center justify-center">
-                <img :src="`${apiBase}/api/product/${product.id}/photo`" alt="商品圖片"
+                <img :src="`${apiBase}/api/product/${item.product?.id}/photo`" alt="商品圖片"
                   class="h-20 w-20 object-contain rounded border border-gray-100 bg-gray-50" @error="
                     (event) => (event.target.src = '/images/no_image_available.jpg')
                   " />
@@ -53,12 +47,12 @@
               <div class="flex items-center justify-center gap-2">
                 <router-link
                   class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
-                  :to="{ path: '/product/modify', query: { id: product.id } }">
+                  :to="{ path: '/product/modify', query: { id: item.id } }">
                   修改
                 </router-link>
                 <button type="button"
                   class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
-                  @click="deleteProduct(product.id)">
+                  @click="deleteProduct(item.id)">
                   刪除
                 </button>
               </div>
@@ -66,7 +60,7 @@
           </tr>
 
           <!-- 若無商品時的顯示 -->
-          <tr v-if="productList.length === 0">
+          <tr v-if="cartItems.length === 0">
             <td colspan="8" class="px-4 py-8 text-center text-gray-400">
               目前尚無商品資料
             </td>
@@ -83,20 +77,20 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
-const productList = ref([]);
+const cartItems = ref([]);
 
 /* 獲取商品列表 */
-const getProductList = async () => {
+const getCartItems = async () => {
   try {
-    const response = await axios.get(`${apiBase}/api/product/vendor`, {
+    const response = await axios.get(`${apiBase}/api/cart`, {
       withCredentials: true,
     });
-    productList.value = response.data;
+    cartItems.value = response.data;
   } catch (error) {
     console.error("無法取得商品列表", error);
   }
 };
-onMounted(getProductList);
+onMounted(getCartItems);
 
 /* 刪除商品 */
 const deleteProduct = async (id) => {
@@ -118,7 +112,7 @@ const deleteProduct = async (id) => {
       withCredentials: true,
     });
 
-    productList.value = productList.value.filter((product) => product.id !== id);
+    // productList.value = productList.value.filter((product) => product.id !== id);
 
     Swal.fire({
       title: "已刪除",
