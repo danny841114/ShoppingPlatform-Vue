@@ -72,7 +72,7 @@ const handleLogin = async () => {
       confirmButtonText: "確定",
     });
 
-    router.replace("/index");
+    router.replace("/");
   } catch (error) {
     errorMsg.value = error.response?.data?.message || "登入失敗，請稍後再試";
     await Swal.fire({

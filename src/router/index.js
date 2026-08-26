@@ -15,7 +15,7 @@ const router = createRouter({
       path: "/",
       name: "Index",
       component: Index,
-      alias: "/index",
+      alias: "/product",
     },
     {
       path: "/member/login",
@@ -102,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
   const requiredRole = to.meta.requiresRole;
   if (requiredRole && requiredRole !== authStore.role) {
     alert("No permission to view this page");
-    return next("/index");
+    return next("/");
   }
 
   next();

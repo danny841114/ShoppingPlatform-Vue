@@ -186,7 +186,7 @@ const logout = async () => {
 /* 搜尋商品 */
 const searchProducts = () => {
   router.push({
-    path: "/index",
+    path: "/product",
     query: {
       keyword: keyword.value,
     },
