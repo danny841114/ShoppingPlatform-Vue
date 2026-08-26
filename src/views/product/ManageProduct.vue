@@ -79,7 +79,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { productApi } from "@/api/productApi";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
@@ -88,15 +88,11 @@ const productList = ref([]);
 /* 獲取商品列表 */
 const getProductList = async () => {
   try {
-    const response = await axios.get(`${apiBase}/api/product/vendor`, {
-      withCredentials: true,
-    });
-    productList.value = response.data;
+    productList.value = await productApi.getProductsByVendor();
   } catch (error) {
     console.error("無法取得商品列表", error);
   }
 };
-onMounted(getProductList);
 
 /* 刪除商品 */
 const deleteProduct = async (id) => {
@@ -109,14 +105,10 @@ const deleteProduct = async (id) => {
     cancelButtonText: "返回",
   });
 
-  if (!ask.isConfirmed) {
-    return;
-  }
+  if (!ask.isConfirmed) return;
 
   try {
-    const response = await axios.delete(`${apiBase}/api/product/${id}`, {
-      withCredentials: true,
-    });
+    await productApi.deleteProduct(id);
 
     productList.value = productList.value.filter((product) => product.id !== id);
 
@@ -128,15 +120,15 @@ const deleteProduct = async (id) => {
     });
   } catch (error) {
     console.error("刪除失敗", error);
-    const errMsg = error.response?.data?.message || "刪除商品失敗，請稍後再試";
     Swal.fire({
       title: "刪除失敗",
-      text: errMsg,
       icon: "error",
       confirmButtonText: "確定",
     });
   }
 };
+
+onMounted(getProductList);
 </script>
 
 <style scoped></style>

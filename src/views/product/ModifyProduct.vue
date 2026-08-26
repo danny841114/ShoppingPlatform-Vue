@@ -107,7 +107,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import { productApi } from "@/api/productApi";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
@@ -126,12 +126,12 @@ const fileInputKey = ref(Date.now());
 /* 獲取商品資訊 */
 const getProduct = async () => {
   try {
-    const response = await axios.get(`${apiBase}/api/product/${productId}`);
-    const data = response.data;
-    productName.value = data.name;
-    productDescription.value = data.description || "";
-    productPrice.value = data.price;
-    productQuantity.value = data.quantity;
+    const res = await productApi.getProductById(productId);
+
+    productName.value = res.name;
+    productDescription.value = res.description || "";
+    productPrice.value = res.price;
+    productQuantity.value = res.quantity;
 
     // 清空手動選擇的圖片狀態
     clearSelectedPhoto();
@@ -139,7 +139,6 @@ const getProduct = async () => {
     console.error("獲取商品資料失敗:", error);
   }
 };
-onMounted(() => getProduct()); // 傳入一個「函式」，不是執行一個函式的結果
 
 /* 追蹤上傳圖片 */
 const handlePhotoChange = (event) => {
@@ -168,21 +167,10 @@ const clearSelectedPhoto = () => {
 };
 
 /* 重設整個表單 */
-const resetForm = () => {
-  getProduct();
-};
+const resetForm = getProduct
 
 /* 修改商品 */
 const modifyProduct = async () => {
-  const formData = new FormData();
-  formData.append("name", productName.value);
-  formData.append("description", productDescription.value);
-  formData.append("price", productPrice.value);
-  formData.append("quantity", productQuantity.value);
-  if (productPhoto.value instanceof File && productPhoto.value.size > 0) {
-    formData.append("photo", productPhoto.value);
-  }
-
   const ask = await Swal.fire({
     title: "確定修改？",
     icon: "warning",
@@ -192,18 +180,18 @@ const modifyProduct = async () => {
     cancelButtonText: "返回",
   });
 
-  if (!ask.isConfirmed) {
-    return;
-  }
+  if (!ask.isConfirmed) return;
 
   try {
-    const response = await axios.put(
-      `${apiBase}/api/product/${productId}`,
-      formData,
-      {
-        withCredentials: true,
-      },
+    await productApi.updateProduct(
+      productId,
+      productName.value,
+      productDescription.value,
+      productPrice.value,
+      productQuantity.value,
+      productPhoto.value
     );
+
     router.push("/product/manage");
   } catch (error) {
     console.error("修改商品失敗:", error);
@@ -214,6 +202,8 @@ const modifyProduct = async () => {
     });
   }
 };
+
+onMounted(getProduct);
 </script>
 
 <style scoped></style>

@@ -95,11 +95,10 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import { productApi } from "@/api/productApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productName = ref("");
 const productDescription = ref("");
 const productPrice = ref("");
@@ -133,15 +132,6 @@ const removePhoto = () => {
 
 /* 新增商品 */
 const addProduct = async () => {
-  const formData = new FormData();
-  formData.append("name", productName.value);
-  formData.append("description", productDescription.value);
-  formData.append("price", productPrice.value);
-  formData.append("quantity", productQuantity.value);
-  if (productPhoto.value) {
-    formData.append("photo", productPhoto.value);
-  }
-
   const ask = await Swal.fire({
     title: "確定新增？",
     icon: "warning",
@@ -151,14 +141,17 @@ const addProduct = async () => {
     cancelButtonText: "返回",
   });
 
-  if (!ask.isConfirmed) {
-    return;
-  }
+  if (!ask.isConfirmed) return;
 
   try {
-    const response = await axios.post(`${apiBase}/api/product`, formData, {
-      withCredentials: true,
-    });
+    await productApi.addProduct(
+      productName.value,
+      productDescription.value,
+      productPrice.value,
+      productQuantity.value,
+      productPhoto.value
+    );
+
     router.push("/product/manage");
   } catch (error) {
     console.error("新增商品失敗:", error);

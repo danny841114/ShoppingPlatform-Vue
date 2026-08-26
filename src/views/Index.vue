@@ -108,7 +108,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
+import { productApi } from "@/api/productApi";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productList = ref([]);
@@ -120,35 +120,25 @@ const totalPages = ref(1);
 const totalElements = ref();
 
 const getProductList = async () => {
-  const response = await axios.get(`${apiBase}/api/product`, {
-    params: {
-      size: 12,
-      page: 0,
-      keyword: keyword.value,
-    },
-  });
+  const res = await productApi.getProducts(12, 0, keyword.value);
+
   pageSize.value = 12;
   currentPage.value = 0;
-  productList.value = response.data.products;
-  totalPages.value = response.data.totalPages;
-  totalElements.value = response.data.totalElements;
+  productList.value = res.products;
+  totalPages.value = res.totalPages;
+  totalElements.value = res.totalElements;
 };
 
 const handlePage = async () => {
-  const response = await axios.get(`${apiBase}/api/product`, {
-    params: {
-      size: pageSize.value,
-      page: currentPage.value,
-      keyword: keyword.value,
-    },
-  });
+  const res = await productApi.getProducts(pageSize.value, currentPage.value, keyword.value);
 
-  totalPages.value = response.data?.totalPages;
+  totalPages.value = res.totalPages;
+  productList.value = res.products;
+
   if (currentPage.value > totalPages.value) {
     currentPage.value = 0;
     return handlePage();
   }
-  productList.value = response.data?.products;
 };
 
 const changePage = (newPage) => {
@@ -170,6 +160,7 @@ const handlePageChange = () => {
 };
 
 onMounted(getProductList);
+
 watch(
   () => route.query,
   () => {

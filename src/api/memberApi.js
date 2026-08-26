@@ -15,12 +15,12 @@ apiClient.interceptors.response.use(
 
 export const memberApi = {
   register(account, password) {
-    return apiClient.post(`/register`, { account, password });
+    return apiClient.post('/register', { account, password });
   },
 
   login(account, password) {
     return apiClient.post(
-      `/login`,
+      '/login',
       { account, password },
       { withCredentials: true },
     );
