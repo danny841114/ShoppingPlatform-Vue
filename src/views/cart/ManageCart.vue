@@ -29,7 +29,17 @@
 
             <!-- 價格與數量 -->
             <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.product?.price }}</td>
-            <td class="px-4 py-2 text-center text-gray-800">{{ item.quantity }}</td>
+            <td class="px-4 py-2 text-center text-gray-800">
+              <button type="button"
+                class="rounded  bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1">
+                -
+              </button>
+              &nbsp;{{ item.quantity }}&nbsp;
+              <button type="button"
+                class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1">
+                +
+              </button>
+            </td>
             <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.subtotal }}</td>
 
             <!-- 圖片 -->
@@ -45,11 +55,6 @@
             <!-- 操作按鈕區 -->
             <td class="px-4 py-2 text-center whitespace-nowrap">
               <div class="flex items-center justify-center gap-2">
-                <router-link
-                  class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
-                  :to="{ path: '/product/modify', query: { id: item.id } }">
-                  修改
-                </router-link>
                 <button type="button"
                   class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
                   @click="deleteProduct(item.id)">
