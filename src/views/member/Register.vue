@@ -64,10 +64,9 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 const router = useRouter();
 const account = ref("");
 const password = ref("");
@@ -122,12 +121,8 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post(`${apiBase}/api/register`, {
-      account: account.value,
-      password: password.value,
-    });
+    await memberApi.register(account.value, password.value);
 
-    console.log("註冊成功", response.data);
     await Swal.fire({
       title: "註冊成功",
       icon: "success",
@@ -138,10 +133,8 @@ const handleSubmit = async () => {
     router.push("/");
   } catch (error) {
     console.error("註冊失敗", error);
-    const errorMessage = error.response?.data?.error || "註冊失敗，請稍後再試";
     Swal.fire({
       title: "註冊失敗",
-      text: errorMessage,
       icon: "error",
       confirmButtonText: "確定",
     });

@@ -39,30 +39,21 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import axios from "axios";
+import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
-const apiBase = import.meta.env.VITE_API_BASE_URL;
 const router = useRouter();
 const authStore = useAuthStore();
 const account = ref("");
 const password = ref("");
-const errorMsg = ref("");
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post(
-      `${apiBase}/api/login`,
-      {
-        account: account.value,
-        password: password.value,
-      },
-      { withCredentials: true },
-    );
+    const res = await memberApi.login(account.value, password.value);
 
     authStore.setLogin({
-      account: response.data.account,
-      role: response.data.role,
+      account: res.account,
+      role: res.role,
     });
 
     await Swal.fire({
@@ -74,11 +65,10 @@ const handleLogin = async () => {
 
     router.replace("/");
   } catch (error) {
-    errorMsg.value = error.response?.data?.message || "登入失敗，請稍後再試";
+    console.error("登入失敗", error);
     await Swal.fire({
       title: "登入失敗",
       icon: "error",
-      text: errorMsg.value,
       confirmButtonText: "確定",
     });
   }
