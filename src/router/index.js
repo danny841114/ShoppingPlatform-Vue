@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/views/Index.vue";
 import Login from "@/views/member/Login.vue";
 import Register from "@/views/member/Register.vue";
+import ProductDetail from "@/views/product/ProductDetail.vue";
 import AddProduct from "@/views/product/AddProduct.vue";
 import ManageProduct from "@/views/product/ManageProduct.vue";
 import ModifyProduct from "@/views/product/ModifyProduct.vue";
@@ -32,6 +33,12 @@ const router = createRouter({
       meta: {
         guestOnly: true,
       },
+    },
+    {
+      path: "/product/:productId",
+      name: "ProductDetail",
+      component: ProductDetail,
+      props: (route) => ({ productId: Number(route.params.productId) }),
     },
     {
       path: "/product/add",
