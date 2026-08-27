@@ -10,7 +10,7 @@ apiClient.interceptors.response.use(
   (error) => {
     console.error("API Error:", error);
     return Promise.reject(error);
-  },
+  }
 );
 
 export const cartApi = {
@@ -18,11 +18,11 @@ export const cartApi = {
     return apiClient.get("", { withCredentials: true });
   },
 
-  updateCartItemQuantity(productId, quantity) {
-    return apiClient.put(
-      `/${productId}`,
-      { quantity },
-      { withCredentials: true },
-    );
-  }
+  updateCartItemQuantity(cartId, quantity) {
+    return apiClient.put(`/${cartId}`, { quantity }, { withCredentials: true });
+  },
+
+  deleteCartItem(cartId) {
+    return apiClient.delete(`/${cartId}`, { withCredentials: true });
+  },
 };

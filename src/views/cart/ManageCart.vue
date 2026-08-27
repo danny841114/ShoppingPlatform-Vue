@@ -59,7 +59,7 @@
               <div class="flex items-center justify-center gap-2">
                 <button type="button"
                   class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
-                  @click="deleteProduct(item.id)">
+                  @click="deleteCartItem(item.id)">
                   刪除
                 </button>
               </div>
@@ -126,7 +126,7 @@ const changeQuantity = (item, delta) => {
 }
 
 /* 刪除商品 */
-const deleteProduct = async (id) => {
+const deleteCartItem = async (id) => {
   const ask = await Swal.fire({
     title: "確定刪除？",
     icon: "warning",
@@ -139,11 +139,9 @@ const deleteProduct = async (id) => {
   if (!ask.isConfirmed) return;
 
   try {
-    // await axios.delete(`${apiBase}/api/product/${id}`, {
-    //   withCredentials: true,
-    // });
+    await cartApi.deleteCartItem(id)
 
-    // productList.value = productList.value.filter((product) => product.id !== id);
+    cartItems.value = cartItems.value.filter((item) => item.id !== id);
 
     Swal.fire({
       title: "已刪除",
