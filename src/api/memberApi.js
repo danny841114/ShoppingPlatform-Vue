@@ -10,19 +10,23 @@ apiClient.interceptors.response.use(
   (error) => {
     console.error("API Error:", error);
     return Promise.reject(error);
-  },
+  }
 );
 
 export const memberApi = {
   register(account, password) {
-    return apiClient.post('/register', { account, password });
+    return apiClient.post("/register", { account, password });
   },
 
   login(account, password) {
     return apiClient.post(
-      '/login',
+      "/login",
       { account, password },
-      { withCredentials: true },
+      { withCredentials: true }
     );
+  },
+
+  logout() {
+    return apiClient.post("/logout", null, { withCredentials: true });
   },
 };
