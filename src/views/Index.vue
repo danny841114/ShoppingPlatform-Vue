@@ -30,32 +30,34 @@
     <div v-if="productList.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <div v-for="product in productList" :key="product.id"
         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col justify-between group">
-        <!-- 商品圖片區 -->
-        <div class="w-full h-48 bg-gray-50 overflow-hidden relative">
-          <img :src="`${apiBase}/api/product/${product.id}/photo`" :alt="product.name"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            @error="onImageError" />
-        </div>
-
-        <!-- 商品資訊區 -->
-        <div class="p-4 flex-1 flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 mb-1">
-              {{ product.name }}
-            </h3>
-            <p class="text-sm text-gray-500 line-clamp-2 mb-3">
-              {{ product.description || "暫無商品描述" }}
-            </p>
+        <router-link :to="`/product/${product.id}`">
+          <!-- 商品圖片區 -->
+          <div class="w-full h-48 bg-gray-50 overflow-hidden relative">
+            <img :src="`${apiBase}/api/product/${product.id}/photo`" :alt="product.name"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              @error="onImageError" />
           </div>
 
-          <!-- 賣家資訊 -->
-          <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
-            <span>賣家</span>
-            <span class="font-medium text-gray-600">
-              👤 {{ product.vendor?.account || "官方賣家" }}
-            </span>
+          <!-- 商品資訊區 -->
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 mb-1">
+                {{ product.name }}
+              </h3>
+              <p class="text-sm text-gray-500 line-clamp-2 mb-3">
+                {{ product.description || "暫無商品描述" }}
+              </p>
+            </div>
+
+            <!-- 賣家資訊 -->
+            <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+              <span>賣家</span>
+              <span class="font-medium text-gray-600">
+                👤 {{ product.vendor?.account || "官方賣家" }}
+              </span>
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
 
@@ -107,7 +109,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { productApi } from "@/api/productApi";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
