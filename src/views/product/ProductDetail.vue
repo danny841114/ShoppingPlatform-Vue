@@ -28,7 +28,7 @@
                     <hr class="border-gray-200" />
 
                     <!-- 數量選擇 -->
-                    <div>
+                    <div v-if="'VENDOR' !== authStore.role">
                         <label class="block text-sm font-medium text-gray-700 mb-2">數量</label>
                         <div class="flex items-center space-x-3">
                             <div class="flex items-center rounded-md border border-gray-300">
@@ -45,8 +45,8 @@
                 </div>
 
                 <!-- 按鈕區 -->
-                <div class="mt-8 flex space-x-4">
-                    <button @click="addToCart"
+                <div class="mt-8 flex space-x-4" v-if="'VENDOR' !== authStore.role">
+                    <button @click="addCartItem"
                         class="flex-1 rounded-md border border-blue-600 bg-white py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         加入購物車
                     </button>
@@ -87,12 +87,15 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
 import { productApi } from '@/api/productApi'
+import { cartApi } from '@/api/cartApi';
+import { useAuthStore } from "@/stores/auth";
 import Swal from "sweetalert2";
 
 const props = defineProps({
     productId: Number,
 })
 const apiBase = import.meta.env.VITE_API_BASE_URL;
+const authStore = useAuthStore();
 const product = ref({})
 const router = useRouter();
 const quantity = ref(1)
@@ -111,6 +114,32 @@ const getProduct = async () => {
             showConfirmButton: false,
         });
         router.push("/")
+    }
+}
+
+const addCartItem = async () => {
+    try {
+        await cartApi.addCartItem(props.productId, quantity.value)
+
+        Swal.fire({
+            title: "加入購物車成功",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    } catch (error) {
+        console.error("加入購物車失敗", error)
+
+        let errMsg = error.response?.data?.message || "server error";
+        if ("Account 'anonymousUser' not found" === errMsg) errMsg = "請登入後再執行"
+
+        Swal.fire({
+            title: "加入購物車失敗",
+            icon: "error",
+            text: errMsg,
+            timer: 2000,
+            showConfirmButton: false,
+        });
     }
 }
 

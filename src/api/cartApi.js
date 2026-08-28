@@ -25,4 +25,12 @@ export const cartApi = {
   deleteCartItem(cartId) {
     return apiClient.delete(`/${cartId}`, { withCredentials: true });
   },
+
+  addCartItem(productId, quantity) {
+    return apiClient.post(
+      "",
+      { productId, quantity },
+      { withCredentials: true }
+    );
+  },
 };
