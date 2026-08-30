@@ -1,6 +1,14 @@
 <template>
   <div class="container mx-auto mt-8 px-4 max-w-6xl">
-    <h3 class="mb-6 text-2xl font-bold text-gray-800">購物車</h3>
+    <div class="mb-6 flex items-center justify-between">
+      <h3 class="text-2xl font-bold text-gray-800">購物車</h3>
+
+      <button type="button"
+        class="rounded  bg-emerald-800 px-3 py-3 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
+        @click="checkOut">
+        結帳
+      </button>
+    </div>
 
     <!-- 表格外框與響應式橫向滾動區塊 -->
     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
@@ -19,10 +27,11 @@
         <tbody class="divide-y divide-gray-200 border-t border-gray-200">
           <tr v-for="(item, index) in cartItems" :key="item.id || index"
             class="h-24 hover:bg-gray-50 transition-colors">
-            <!-- 序號 -->
-            <th class="px-4 py-2 text-center font-medium text-gray-900" scope="row">
-              {{ index + 1 }}
-            </th>
+            <!-- 核取方塊 -->
+            <td class="px-4 py-2 text-center">
+              <input type="checkbox" :value="item.id" v-model="selectedItemIds"
+                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+            </td>
 
             <!-- 名稱與描述 -->
             <td class="px-4 py-2 text-center text-gray-800">{{ item.product?.name }}</td>
@@ -83,9 +92,11 @@ import { ref, reactive, onMounted } from "vue";
 import { debounce } from 'lodash-es'
 import { cartApi } from "@/api/cartApi";
 import Swal from "sweetalert2";
+import { orderApi } from "@/api/orderApi";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const cartItems = ref([]);
+const selectedItemIds = ref([])
 const localQuantities = reactive({})
 
 const getQuantity = (item) => {
@@ -160,6 +171,17 @@ const deleteCartItem = async (id) => {
     });
   }
 };
+
+const checkOut = () => {
+  console.log("selected cart items:", selectedItemIds.value)
+
+  try {
+    const res = orderApi.addOrder(selectedItemIds.value)
+    console.log("add order response:", res)
+  } catch (error) {
+    console.error("新增訂單失敗", error)
+  }
+}
 
 onMounted(getCartItems);
 </script>

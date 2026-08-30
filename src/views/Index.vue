@@ -122,7 +122,7 @@ const totalPages = ref(1);
 const totalElements = ref();
 
 const getProductList = async () => {
-  const res = await productApi.getProducts(12, 0, keyword.value);
+  const res = await productApi.getProducts(12, 0, null);
 
   pageSize.value = 12;
   currentPage.value = 0;
@@ -169,7 +169,7 @@ watch(
     currentPage.value = Number(route.query.page || 0);
     pageSize.value = Number(route.query.size || 5);
     keyword.value = route.query.keyword || "";
-    getProductList();
+    handlePage();
   },
 );
 </script>
