@@ -10,12 +10,15 @@
 <script setup>
 import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useCartStore } from "@/stores/cart";
 import NavBar from "@/components/Navbar.vue";
 
 const authStore = useAuthStore();
+const cartStore = useCartStore();
 
 onMounted(() => {
   authStore.fetchMe();
+  cartStore.fetchCart();
 });
 </script>
 

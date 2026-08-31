@@ -152,11 +152,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useCartStore } from "@/stores/cart";
 import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const cartStore = useCartStore();
 const keyword = ref("");
 const isOpen = ref(false); // 控制手機版漢堡選單開關
 
@@ -166,6 +168,8 @@ const logout = async () => {
     await memberApi.logout()
 
     authStore.logout();
+
+    cartStore.clearCart();
 
     await Swal.fire({
       title: "登出成功",

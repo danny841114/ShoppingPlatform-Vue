@@ -4,7 +4,7 @@
       <h3 class="text-2xl font-bold text-gray-800">購物車</h3>
 
       <button type="button"
-        class="rounded  bg-emerald-800 px-3 py-3 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
+        class="rounded  bg-blue-800 px-3 py-3 text-xs font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
         @click="checkOut">
         結帳
       </button>
@@ -15,7 +15,10 @@
       <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
         <thead class="bg-gray-50 text-gray-700">
           <tr>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">#</th>
+            <th scope="col" class="px-4 py-3 text-center font-semibold">
+              <input type="checkbox" @click="cartStore.toggleSelectAll" v-model="cartStore.isAllSelected"
+                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+            </th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">名稱</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">價格</th>
             <th scope="col" class="px-4 py-3 text-center font-semibold">數量</th>
@@ -25,11 +28,12 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 border-t border-gray-200">
-          <tr v-for="(item, index) in cartItems" :key="item.id || index"
+          <tr v-for="(item, index) in cartStore.cartItems" :key="item.id || index"
             class="h-24 hover:bg-gray-50 transition-colors">
             <!-- 核取方塊 -->
             <td class="px-4 py-2 text-center">
-              <input type="checkbox" :value="item.id" v-model="selectedItemIds"
+              <input type="checkbox" :value="item.id" v-model="cartStore.selectedItemIds"
+                @click="cartStore.toggleSelectItem(item.id)"
                 class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
             </td>
 
@@ -76,7 +80,7 @@
           </tr>
 
           <!-- 若無商品時的顯示 -->
-          <tr v-if="cartItems.length === 0">
+          <tr v-if="cartStore.cartItems === 0">
             <td colspan="8" class="px-4 py-8 text-center text-gray-400">
               目前尚無商品資料
             </td>
@@ -88,15 +92,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { reactive } from "vue";
 import { debounce } from 'lodash-es'
 import { cartApi } from "@/api/cartApi";
+import { useCartStore } from '@/stores/cart'
 import Swal from "sweetalert2";
-import { orderApi } from "@/api/orderApi";
 
+const cartStore = useCartStore()
 const apiBase = import.meta.env.VITE_API_BASE_URL;
-const cartItems = ref([]);
-const selectedItemIds = ref([])
 const localQuantities = reactive({})
 
 const getQuantity = (item) => {
@@ -107,15 +110,6 @@ const getSubtotal = (item) => {
   const qty = getQuantity(item)
   return item.product?.price ? item.product.price * qty : item.subtotal
 }
-
-/* 獲取商品列表 */
-const getCartItems = async () => {
-  try {
-    cartItems.value = await cartApi.getCartItems()
-  } catch (error) {
-    console.error("無法取得商品列表", error);
-  }
-};
 
 const debouncedUpdateQuantity = debounce(async (id, quantity) => {
   try {
@@ -150,9 +144,7 @@ const deleteCartItem = async (id) => {
   if (!ask.isConfirmed) return;
 
   try {
-    await cartApi.deleteCartItem(id)
-
-    cartItems.value = cartItems.value.filter((item) => item.id !== id);
+    cartStore.removeItem(id)
 
     Swal.fire({
       title: "已刪除",
@@ -161,7 +153,6 @@ const deleteCartItem = async (id) => {
       showConfirmButton: false,
     });
   } catch (error) {
-    console.error("刪除失敗", error);
     const errMsg = error.response?.data?.message || "刪除商品失敗，請稍後再試";
     Swal.fire({
       title: "刪除失敗",
@@ -175,15 +166,24 @@ const deleteCartItem = async (id) => {
 const checkOut = () => {
   console.log("selected cart items:", selectedItemIds.value)
 
-  try {
-    const res = orderApi.addOrder(selectedItemIds.value)
-    console.log("add order response:", res)
-  } catch (error) {
-    console.error("新增訂單失敗", error)
-  }
-}
+  if (selectedItemIds.value.length === 0) {
+    Swal.fire({
+      title: "結帳項目未選取",
+      icon: "warning",
+      timer: 1500,
+      showConfirmButton: false,
+    });
 
-onMounted(getCartItems);
+    return
+  }
+
+  // try {
+  //   const res = orderApi.addOrder(selectedItemIds.value)
+  //   console.log("add order response:", res)
+  // } catch (error) {
+  //   console.error("新增訂單失敗", error)
+  // }
+}
 </script>
 
 <style scoped></style>

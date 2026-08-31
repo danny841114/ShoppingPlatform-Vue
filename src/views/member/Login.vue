@@ -39,11 +39,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useCartStore } from "@/stores/cart";
 import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const cartStore = useCartStore();
 const account = ref("");
 const password = ref("");
 
@@ -55,6 +57,8 @@ const handleLogin = async () => {
       account: res.account,
       role: res.role,
     });
+
+    await cartStore.fetchCart();
 
     await Swal.fire({
       title: "登入成功",
