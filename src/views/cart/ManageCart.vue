@@ -2,7 +2,6 @@
   <div class="container mx-auto mt-8 px-4 max-w-6xl">
     <div class="mb-6 flex items-center justify-between">
       <h3 class="text-2xl font-bold text-gray-800">購物車</h3>
-
       <button type="button"
         class="rounded  bg-blue-800 px-3 py-3 text-xs font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
         @click="checkOut">
@@ -94,7 +93,6 @@
 <script setup>
 import { reactive } from "vue";
 import { debounce } from 'lodash-es'
-import { cartApi } from "@/api/cartApi";
 import { useCartStore } from '@/stores/cart'
 import Swal from "sweetalert2";
 
@@ -111,13 +109,18 @@ const getSubtotal = (item) => {
   return item.product?.price ? item.product.price * qty : item.subtotal
 }
 
-const debouncedUpdateQuantity = debounce(async (id, quantity) => {
+const debouncedUpdateQuantity = debounce(async (id, newQuantity) => {
   try {
-    await cartApi.updateCartItemQuantity(id, quantity)
+    await cartStore.updateQuantity(id, newQuantity)
   } catch (error) {
-    console.log("更新數量失敗", error)
+    // 如果 API 失敗，將本地的 localQuantities 恢復成 Pinia 裡的舊數量
+    const item = cartStore.cartItems.find((i) => String(i.id) === String(id))
+    if (item) {
+      localQuantities[id] = item.quantity
+    }
+    console.error('更新數量失敗，已還原原數量', error)
   }
-}, 2000)
+}, 500)
 
 const changeQuantity = (item, delta) => {
   const currentQty = getQuantity(item)
@@ -144,7 +147,7 @@ const deleteCartItem = async (id) => {
   if (!ask.isConfirmed) return;
 
   try {
-    cartStore.removeItem(id)
+    await cartStore.removeItem(id)
 
     Swal.fire({
       title: "已刪除",

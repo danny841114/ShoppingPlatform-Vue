@@ -68,11 +68,18 @@ export const useCartStore = defineStore("cart", () => {
 
   // 更新商品數量
   const updateQuantity = async (id, newQuantity) => {
-    if (newQuantity < 1) return;
-    const item = cartItems.value.find((i) => i.id === id);
-    if (item) {
+    const item = cartItems.value.find((i) => String(i.id) === String(id));
+    if (!item) return;
+
+    const oldQuantity = item.quantity;
+
+    try {
+      await cartApi.updateCartItemQuantity(id, newQuantity);
       item.quantity = newQuantity;
-      // await apiUpdateCartItem(id, newQuantity) // 同步至後端
+    } catch (error) {
+      console.error(`[CartStore] 更新商品 ${id} 數量失敗:`, error);
+      item.quantity = oldQuantity;
+      throw error;
     }
   };
 
