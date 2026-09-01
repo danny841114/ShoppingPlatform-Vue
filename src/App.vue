@@ -16,9 +16,11 @@ import NavBar from "@/components/Navbar.vue";
 const authStore = useAuthStore();
 const cartStore = useCartStore();
 
-onMounted(() => {
-  authStore.fetchMe();
-  cartStore.fetchCart();
+onMounted(async () => {
+  await authStore.fetchMe();
+  if ("MEMBER" === authStore.role) {
+    cartStore.fetchCart();
+  }
 });
 </script>
 

@@ -87,7 +87,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
 import { productApi } from '@/api/productApi'
-import { cartApi } from '@/api/cartApi';
+import { useCartStore } from '@/stores/cart';
 import { useAuthStore } from "@/stores/auth";
 import Swal from "sweetalert2";
 
@@ -96,6 +96,7 @@ const props = defineProps({
 })
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const authStore = useAuthStore();
+const cartStore = useCartStore();
 const product = ref({})
 const router = useRouter();
 const quantity = ref(1)
@@ -119,7 +120,7 @@ const getProduct = async () => {
 
 const addCartItem = async () => {
     try {
-        await cartApi.addCartItem(props.productId, quantity.value)
+        await cartStore.addItem(props.productId, quantity.value)
 
         Swal.fire({
             title: "加入購物車成功",
@@ -128,8 +129,6 @@ const addCartItem = async () => {
             showConfirmButton: false,
         });
     } catch (error) {
-        console.error("加入購物車失敗", error)
-
         let errMsg = error.response?.data?.message || "server error";
         if ("Account 'anonymousUser' not found" === errMsg) errMsg = "請登入後再執行"
 

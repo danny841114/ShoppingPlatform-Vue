@@ -76,6 +76,26 @@ export const useCartStore = defineStore("cart", () => {
     }
   };
 
+  // 新增購物車商品
+  const addItem = async (productId, quantity = 1) => {
+    try {
+      const resItem = await cartApi.addCartItem(productId, quantity);
+
+      const existingItem = cartItems.value.find(
+        (item) => Number(item.product?.id) === Number(productId)
+      );
+
+      if (existingItem) {
+        existingItem.quantity = resItem.quantity;
+      } else {
+        cartItems.value.push(resItem);
+      }
+    } catch (error) {
+      console.error(`新增商品 ${productId} 至購物車失敗:`, error);
+      throw error;
+    }
+  };
+
   // 刪除購物車單一商品
   const removeItem = async (id) => {
     try {
@@ -118,6 +138,7 @@ export const useCartStore = defineStore("cart", () => {
     toggleSelectItem,
     toggleSelectAll,
     updateQuantity,
+    addItem,
     removeItem,
     clearPurchasedItems,
   };
