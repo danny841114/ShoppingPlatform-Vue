@@ -153,7 +153,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
-import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -165,9 +164,7 @@ const isOpen = ref(false); // 控制手機版漢堡選單開關
 /* 登出 */
 const logout = async () => {
   try {
-    await memberApi.logout()
-
-    authStore.logout();
+    await authStore.logout();
 
     cartStore.clearCart();
 
@@ -180,7 +177,11 @@ const logout = async () => {
 
     router.replace("/");
   } catch (error) {
-    console.log(error);
+    await Swal.fire({
+      title: "登出失敗",
+      icon: "error",
+      confirmButtonText: "確定",
+    });
   }
 };
 

@@ -87,9 +87,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (!authStore.account) {
-    try {
-      await authStore.fetchMe();
-    } catch (e) {}
+    await authStore.fetchMe();
   }
 
   if (to.meta.guestOnly) {

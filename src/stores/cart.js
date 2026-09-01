@@ -96,7 +96,7 @@ export const useCartStore = defineStore("cart", () => {
     }
   };
 
-  // 刪除購物車單一商品
+  // 刪除購物車商品
   const removeItem = async (id) => {
     try {
       await cartApi.deleteCartItem(id);

@@ -8,7 +8,6 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    console.error("API Error:", error);
     return Promise.reject(error);
   }
 );
@@ -28,5 +27,9 @@ export const memberApi = {
 
   logout() {
     return apiClient.post("/logout", null, { withCredentials: true });
+  },
+
+  fetchMe() {
+    return apiClient.get("/me", { withCredentials: true });
   },
 };

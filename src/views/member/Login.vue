@@ -40,7 +40,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
-import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -51,12 +50,7 @@ const password = ref("");
 
 const handleLogin = async () => {
   try {
-    const res = await memberApi.login(account.value, password.value);
-
-    authStore.setLogin({
-      account: res.account,
-      role: res.role,
-    });
+    await authStore.login(account.value, password.value)
 
     await cartStore.fetchCart();
 
@@ -69,7 +63,6 @@ const handleLogin = async () => {
 
     router.replace("/");
   } catch (error) {
-    console.error("登入失敗", error);
     await Swal.fire({
       title: "登入失敗",
       icon: "error",
