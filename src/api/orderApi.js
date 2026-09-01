@@ -13,7 +13,29 @@ apiClient.interceptors.response.use(
 );
 
 export const orderApi = {
-  addOrder(cartIds) {
-    return apiClient.post("", { cartIds }, { withCredentials: true });
+  addOrder(
+    cartIds,
+    receiverName,
+    receiverPhone,
+    receiverEmail,
+    receiverAddress,
+    paymentMethod,
+    note,
+    shippingFee
+  ) {
+    return apiClient.post(
+      "",
+      {
+        cartIds,
+        receiverName,
+        receiverPhone,
+        receiverEmail,
+        receiverAddress,
+        paymentMethod,
+        note,
+        shippingFee,
+      },
+      { withCredentials: true }
+    );
   },
 };

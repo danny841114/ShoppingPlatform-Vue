@@ -94,9 +94,11 @@
 import { reactive } from "vue";
 import { debounce } from 'lodash-es'
 import { useCartStore } from '@/stores/cart'
+import { useRouter } from 'vue-router'
 import Swal from "sweetalert2";
 
 const cartStore = useCartStore()
+const router = useRouter()
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const localQuantities = reactive({})
 
@@ -167,9 +169,7 @@ const deleteCartItem = async (id) => {
 };
 
 const checkOut = () => {
-  console.log("selected cart items:", selectedItemIds.value)
-
-  if (selectedItemIds.value.length === 0) {
+  if (cartStore.selectedItemIds.length === 0) {
     Swal.fire({
       title: "結帳項目未選取",
       icon: "warning",
@@ -180,12 +180,7 @@ const checkOut = () => {
     return
   }
 
-  // try {
-  //   const res = orderApi.addOrder(selectedItemIds.value)
-  //   console.log("add order response:", res)
-  // } catch (error) {
-  //   console.error("新增訂單失敗", error)
-  // }
+  router.push("/order/add")
 }
 </script>
 
