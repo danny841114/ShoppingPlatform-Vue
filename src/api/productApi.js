@@ -1,4 +1,3 @@
-import AddProduct from "@/views/product/AddProduct.vue";
 import axios from "axios";
 
 const apiClient = axios.create({
@@ -9,9 +8,8 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    console.error("API Error:", error);
     return Promise.reject(error);
-  },
+  }
 );
 
 export const productApi = {
