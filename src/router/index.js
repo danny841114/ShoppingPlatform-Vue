@@ -8,6 +8,7 @@ import ManageProduct from "@/views/product/ManageProduct.vue";
 import ModifyProduct from "@/views/product/ModifyProduct.vue";
 import ManageCart from "@/views/cart/ManageCart.vue";
 import AddOrder from "@/views/order/AddOrder.vue";
+import ManageOrder from "@/views/order/ManageOrder.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
@@ -81,6 +82,15 @@ const router = createRouter({
       path: "/order/add",
       name: "AddOrder",
       component: AddOrder,
+      meta: {
+        requiresAuth: true,
+        requiresRole: "MEMBER",
+      },
+    },
+    {
+      path: "/order",
+      name: "ManageOrder",
+      component: ManageOrder,
       meta: {
         requiresAuth: true,
         requiresRole: "MEMBER",
