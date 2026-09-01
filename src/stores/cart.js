@@ -118,13 +118,11 @@ export const useCartStore = defineStore("cart", () => {
     }
   };
 
-  // 下單成功後：清除購物車中「已購買的商品」與「勾選狀態」
+  // 下單成功後，清除購物車中「已購買的商品」與「勾選狀態」
   const clearPurchasedItems = () => {
-    // 留下「未被勾選」的商品
     cartItems.value = cartItems.value.filter(
       (item) => !selectedItemIds.value.includes(item.id)
     );
-    // 清空勾選 ID 陣列
     selectedItemIds.value = [];
   };
 

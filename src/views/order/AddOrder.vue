@@ -77,7 +77,7 @@
                     </div>
                     <div class="flex justify-between text-gray-600">
                         <span>運費</span>
-                        <span>{{ shipping }}</span>
+                        <span>{{ shippingFee }}</span>
                     </div>
                     <div class="flex justify-between text-base font-bold text-gray-900 border-t pt-2">
                         <span>總金額</span>
@@ -92,8 +92,12 @@
 
 <script setup>
 import { reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { orderApi } from '@/api/orderApi'
+import Swal from "sweetalert2";
 
+const router = useRouter()
 const cartStore = useCartStore()
 const form = reactive({
     name: '',
@@ -103,14 +107,44 @@ const form = reactive({
     paymentMethod: 'credit_card',
     note: ''
 })
-const shipping = 60
-const total = computed(() => cartStore.selectedTotalPrice + shipping)
+const shippingFee = 60
+const total = computed(() => cartStore.selectedTotalPrice + shippingFee)
 
-const submitOrder = () => {
+const submitOrder = async () => {
     try {
-        alert('訂單已成功送出！')
-    } catch (error) {
+        const ask = await Swal.fire({
+            title: "送出訂單",
+            icon: "question",
+            allowOutsideClick: false,
+            showCancelButton: true,
+            confirmButtonText: "確認",
+            cancelButtonText: "返回",
+        });
 
+        if (!ask.isConfirmed) return;
+
+        await orderApi.addOrder(
+            cartStore.selectedItemIds,
+            form.name,
+            form.phone,
+            form.email,
+            form.address,
+            form.paymentMethod,
+            form.note,
+            shippingFee
+        )
+
+        cartStore.clearPurchasedItems()
+
+        router.push("/cart")
+    } catch (error) {
+        console.error("訂單送出失敗", error)
+        Swal.fire({
+            title: "訂單送出失敗",
+            icon: "error",
+            timer: 2000,
+            showConfirmButton: false,
+        });
     }
 }
 </script>
