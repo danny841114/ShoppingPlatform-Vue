@@ -53,7 +53,7 @@
             <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
               <span>賣家</span>
               <span class="font-medium text-gray-600">
-                👤 {{ product.vendor?.account || "官方賣家" }}
+                👤 {{ product.vendor?.shopName || "官方賣家" }}
               </span>
             </div>
           </div>

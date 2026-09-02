@@ -4,15 +4,22 @@ import { memberApi } from "@/api/memberApi";
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     account: null,
-    role: null,
+    roles: null,
+    userId: null,
+    memberId: null,
+    vendorId: null,
   }),
 
   actions: {
     async login(account, password) {
       try {
         const data = await memberApi.login(account, password);
+
         this.account = data.account;
-        this.role = data.role;
+        this.roles = data.roles;
+        this.userId = data.userId;
+        this.memberId = data.memberId;
+        this.vendorId = data.vendorId;
       } catch (error) {
         console.error("登入失敗", error);
         throw error;
@@ -22,8 +29,12 @@ export const useAuthStore = defineStore("auth", {
     async fetchMe() {
       try {
         const data = await memberApi.fetchMe();
+
         this.account = data.account;
-        this.role = data.role;
+        this.roles = data.roles;
+        this.userId = data.userId;
+        this.memberId = data.memberId;
+        this.vendorId = data.vendorId;
       } catch (error) {
         const statusCode = error.response?.status;
         if (statusCode && statusCode === 401) {
@@ -37,9 +48,13 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async logout() {
-      await memberApi.logout()
+      await memberApi.logout();
+
       this.account = null;
-      this.role = null;
+      this.roles = null;
+      this.userId = null;
+      this.memberId = null;
+      this.vendorId = null;
     },
   },
 });
