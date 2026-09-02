@@ -74,10 +74,10 @@ export const useCartStore = defineStore("cart", () => {
     }
 
     // 情況 B：全新勾選 -> 檢查是否與目前已選取的 Vendor 相同
-    if (activeVendorId && activeVendorId !== itemVendorId) {
+    if (activeVendorId.value && activeVendorId.value !== itemVendorId) {
       // 跨 Vendor：直接清空先前的選擇，只保留當前這筆
       selectedItemIds.value = [itemId];
-      console.log("activeVendorId", activeVendorId);
+      console.log("activeVendorId", activeVendorId.value);
       console.log("itemVendorId", itemVendorId);
       console.log("AAA");
     } else {
