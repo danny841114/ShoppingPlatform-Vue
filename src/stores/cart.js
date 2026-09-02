@@ -32,6 +32,15 @@ export const useCartStore = defineStore("cart", () => {
     return cartItems.value.length === selectedItemIds.value.length;
   });
 
+  // 動態計算目前已勾選商品隸屬於哪家 Vendor
+  const activeVendorId = computed(() => {
+    if (selectedItemIds.value.length === 0) return null;
+    const firstSelectedItem = cartItems.value.find((item) =>
+      selectedItemIds.value.includes(item.id)
+    );
+    return firstSelectedItem?.product?.vendor?.id || null;
+  });
+
   // 取得購物車列表
   const fetchCart = async () => {
     try {
@@ -48,12 +57,33 @@ export const useCartStore = defineStore("cart", () => {
   };
 
   // 勾選/取消勾選單一商品
-  const toggleSelectItem = (id) => {
-    const index = selectedItemIds.value.indexOf(id);
+  const toggleSelectItem = (item) => {
+    const itemId = item.id;
+    const itemVendorId = item.product?.vendor?.id;
+    const index = selectedItemIds.value.indexOf(itemId);
+
+    // console.log("itemId",itemId)
+    // console.log("item.product",item.product)
+    // console.log("item.product?.vendor",item.product?.vendor)
+    // console.log("item.product?.vendor?.id",item.product?.vendor?.id)
+
+    // 情況 A：已經勾選過 -> 點擊則是「取消勾選」
     if (index > -1) {
-      selectedItemIds.value.splice(index, 1); // 從 index 位置刪除 1 個元素
+      selectedItemIds.value.splice(index, 1);
+      return;
+    }
+
+    // 情況 B：全新勾選 -> 檢查是否與目前已選取的 Vendor 相同
+    if (activeVendorId && activeVendorId !== itemVendorId) {
+      // 跨 Vendor：直接清空先前的選擇，只保留當前這筆
+      selectedItemIds.value = [itemId];
+      console.log("activeVendorId", activeVendorId);
+      console.log("itemVendorId", itemVendorId);
+      console.log("AAA");
     } else {
-      selectedItemIds.value.push(id);
+      // 同家 Vendor 或目前尚未選取任何商品 -> 正常加入
+      selectedItemIds.value.push(itemId);
+      console.log("BBB");
     }
   };
 
@@ -136,6 +166,7 @@ export const useCartStore = defineStore("cart", () => {
     selectedItems,
     selectedTotalPrice,
     isAllSelected,
+    activeVendorId,
 
     // Actions
     fetchCart,

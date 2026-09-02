@@ -9,89 +9,96 @@
       </button>
     </div>
 
-    <!-- 表格外框與響應式橫向滾動區塊 -->
-    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-      <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
-        <thead class="bg-gray-50 text-gray-700">
-          <tr>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">
-              <input type="checkbox" @click="cartStore.toggleSelectAll" v-model="cartStore.isAllSelected"
-                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
-            </th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">名稱</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">價格</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">數量</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">小計</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">圖片</th>
-            <th scope="col" class="px-4 py-3 text-center font-semibold">操作</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 border-t border-gray-200">
-          <tr v-for="(item, index) in cartStore.cartItems" :key="item.id || index"
-            class="h-24 hover:bg-gray-50 transition-colors">
-            <!-- 核取方塊 -->
-            <td class="px-4 py-2 text-center">
-              <input type="checkbox" :value="item.id" v-model="cartStore.selectedItemIds"
-                @click="cartStore.toggleSelectItem(item.id)"
-                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-            </td>
+    <div class="space-y-6">
+      <!-- 若無商品時的顯示 -->
+      <div v-if="cartStore.cartItems.length === 0"
+        class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-400">
+        目前購物車尚無商品資料
+      </div>
 
-            <!-- 名稱與描述 -->
-            <td class="px-4 py-2 text-center text-gray-800">{{ item.product?.name }}</td>
+      <!-- 按 Vendor 分組循環 -->
+      <div v-else v-for="group in groupedCartItems" :key="group.vendorId"
+        class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
 
-            <!-- 價格與數量 -->
-            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ item.product?.price }}</td>
-            <td class="px-4 py-2 text-center text-gray-800">
-              <button type="button"
-                class="rounded  bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
-                :disabled="item.quantity <= 1" @click="changeQuantity(item, -1)">
-                -
-              </button>
-              &nbsp;{{ getQuantity(item) }}&nbsp;
-              <button type="button"
-                class="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
-                :disabled="getQuantity(item) >= item.product?.quantity" @click="changeQuantity(item, 1)">
-                +
-              </button>
-            </td>
-            <td class="px-4 py-2 text-center text-gray-800 font-medium">${{ getSubtotal(item) }}</td>
+        <!-- 商家標頭區塊 -->
+        <div class="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-3 font-semibold text-gray-800">
+          <span class="text-blue-600">🏪</span>
+          <span>{{ group.shopName }}</span>
+        </div>
 
-            <!-- 圖片 -->
-            <td class="px-4 py-2 text-center">
-              <div class="flex items-center justify-center">
-                <img :src="`${apiBase}/api/product/${item.product?.id}/photo`" alt="商品圖片"
-                  class="h-20 w-20 object-contain rounded border border-gray-100 bg-gray-50" @error="
-                    (event) => (event.target.src = '/images/no_image_available.jpg')
-                  " />
-              </div>
-            </td>
+        <!-- 該商家的商品表格 -->
+        <table class="w-full border-collapse text-left text-sm text-gray-500">
+          <thead class="bg-gray-50/50 text-gray-700">
+            <tr>
+              <th scope="col" class="w-12 px-4 py-3 text-center">選擇</th>
+              <th scope="col" class="px-4 py-3 text-center font-semibold">商品名稱</th>
+              <th scope="col" class="w-32 px-4 py-3 text-center font-semibold">單價</th>
+              <th scope="col" class="w-40 px-4 py-3 text-center font-semibold">數量</th>
+              <th scope="col" class="w-32 px-4 py-3 text-center font-semibold">小計</th>
+              <th scope="col" class="w-28 px-4 py-3 text-center font-semibold">圖片</th>
+              <th scope="col" class="w-24 px-4 py-3 text-center font-semibold">操作</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr v-for="item in group.items" :key="item.id" class="h-24 transition-colors hover:bg-gray-50">
 
-            <!-- 操作按鈕區 -->
-            <td class="px-4 py-2 text-center whitespace-nowrap">
-              <div class="flex items-center justify-center gap-2">
+              <!-- 核取方塊 -->
+              <td class="px-4 py-2 text-center">
+                <input type="checkbox" :value="item.id" @change="cartStore.toggleSelectItem(item)"
+                  class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+              </td>
+
+              <!-- 名稱 -->
+              <td class="px-4 py-2 text-center text-gray-800">{{ item.product?.name }}</td>
+
+              <!-- 價格與數量 -->
+              <td class="px-4 py-2 text-center font-medium text-gray-800">${{ item.product?.price }}</td>
+              <td class="px-4 py-2 text-center text-gray-800">
+                <div class="flex items-center justify-center gap-1">
+                  <button type="button"
+                    class="rounded bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
+                    :disabled="getQuantity(item) <= 1" @click="changeQuantity(item, -1)">
+                    -
+                  </button>
+                  <span class="w-8 text-center">{{ getQuantity(item) }}</span>
+                  <button type="button"
+                    class="rounded bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
+                    :disabled="getQuantity(item) >= item.product?.quantity" @click="changeQuantity(item, 1)">
+                    +
+                  </button>
+                </div>
+              </td>
+
+              <!-- 小計 -->
+              <td class="px-4 py-2 text-center font-medium text-gray-800">${{ getSubtotal(item) }}</td>
+
+              <!-- 圖片 -->
+              <td class="px-4 py-2 text-center">
+                <div class="flex items-center justify-center">
+                  <img :src="`${apiBase}/api/product/${item.product?.id}/photo`" alt="商品圖片"
+                    class="h-16 w-16 rounded border border-gray-100 bg-gray-50 object-contain"
+                    @error="(e) => (e.target.src = '/images/no_image_available.jpg')" />
+                </div>
+              </td>
+
+              <!-- 操作 -->
+              <td class="px-4 py-2 text-center whitespace-nowrap">
                 <button type="button"
-                  class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
+                  class="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-rose-700 cursor-pointer"
                   @click="deleteCartItem(item.id)">
                   刪除
                 </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- 若無商品時的顯示 -->
-          <tr v-if="cartStore.cartItems === 0">
-            <td colspan="8" class="px-4 py-8 text-center text-gray-400">
-              目前尚無商品資料
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import { debounce } from 'lodash-es'
 import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
@@ -101,6 +108,26 @@ const cartStore = useCartStore()
 const router = useRouter()
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const localQuantities = reactive({})
+
+const groupedCartItems = computed(() => {
+  const groups = {} // 無法改變物件位置但可以修改內部屬性或陣列
+
+  cartStore.cartItems.forEach((item) => {
+    const vendorId = item.product?.vendor?.id || 'unknown'
+    const shopName = item.product?.vendor?.shopName || '其他商家'
+
+    if (!groups[vendorId]) {
+      groups[vendorId] = {
+        vendorId,
+        shopName,
+        items: []
+      }
+    }
+    groups[vendorId].items.push(item)
+  })
+
+  return Object.values(groups)
+})
 
 const getQuantity = (item) => {
   return localQuantities[item.id] ?? item.quantity

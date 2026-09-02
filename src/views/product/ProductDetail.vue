@@ -136,8 +136,7 @@ const addCartItem = async () => {
             title: "加入購物車失敗",
             icon: "error",
             text: errMsg,
-            timer: 2000,
-            showConfirmButton: false,
+            showConfirmButton: true,
         });
     }
 }

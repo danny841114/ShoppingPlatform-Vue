@@ -134,7 +134,7 @@ const removePhoto = () => {
 const addProduct = async () => {
   const ask = await Swal.fire({
     title: "確定新增？",
-    icon: "warning",
+    icon: "question",
     allowOutsideClick: false,
     showCancelButton: true,
     confirmButtonText: "確認",
