@@ -18,7 +18,7 @@ const cartStore = useCartStore();
 
 onMounted(async () => {
   await authStore.fetchMe();
-  if ("MEMBER" === authStore.role) {
+  if ("MEMBER" === authStore.currentRole) {
     cartStore.fetchCart();
   }
 });

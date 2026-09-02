@@ -23,7 +23,7 @@
               首頁
             </router-link>
 
-            <template v-if="authStore.role === 'MEMBER'">
+            <template v-if="authStore.currentRole === 'MEMBER'">
               <router-link to="/cart"
                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition"
                 active-class="text-blue-600 font-semibold bg-blue-50">
@@ -31,7 +31,7 @@
               </router-link>
             </template>
 
-            <template v-if="authStore.role === 'VENDOR'">
+            <template v-if="authStore.currentRole === 'VENDOR'">
               <router-link to="/product/add"
                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition"
                 active-class="text-blue-600 font-semibold bg-blue-50">
@@ -114,14 +114,14 @@
       </template>
 
       <template v-else>
-        <template v-if="authStore.role === 'MEMBER'">
+        <template v-if="authStore.currentRole === 'MEMBER'">
           <router-link to="/cart" @click="isOpen = false"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
             購物車
           </router-link>
         </template>
 
-        <template v-if="authStore.role === 'VENDOR'">
+        <template v-if="authStore.currentRole === 'VENDOR'">
           <router-link to="/product/add" @click="isOpen = false"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
             上架商品

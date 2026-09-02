@@ -52,7 +52,9 @@ const handleLogin = async () => {
   try {
     await authStore.login(account.value, password.value)
 
-    await cartStore.fetchCart();
+    if ("MEMBER" === authStore.currentRole) {
+      await cartStore.fetchCart();
+    }
 
     await Swal.fire({
       title: "登入成功",

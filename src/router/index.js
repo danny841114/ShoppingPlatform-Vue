@@ -125,7 +125,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const requiredRole = to.meta.requiresRole;
-  if (requiredRole && requiredRole !== authStore.role) {
+  if (requiredRole && requiredRole !== authStore.currentRole) {
     alert("No permission to view this page");
     return next("/");
   }

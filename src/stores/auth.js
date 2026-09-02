@@ -5,6 +5,7 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     account: null,
     roles: null,
+    currentRole: null,
     userId: null,
     memberId: null,
     vendorId: null,
@@ -20,6 +21,8 @@ export const useAuthStore = defineStore("auth", {
         this.userId = data.userId;
         this.memberId = data.memberId;
         this.vendorId = data.vendorId;
+
+        this.currentRole = data.roles[0]; // need to fix
       } catch (error) {
         console.error("登入失敗", error);
         throw error;
@@ -35,6 +38,8 @@ export const useAuthStore = defineStore("auth", {
         this.userId = data.userId;
         this.memberId = data.memberId;
         this.vendorId = data.vendorId;
+
+        this.currentRole = data.roles[0]; // need to fix
       } catch (error) {
         const statusCode = error.response?.status;
         if (statusCode && statusCode === 401) {
