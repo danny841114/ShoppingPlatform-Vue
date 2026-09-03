@@ -1,6 +1,6 @@
 <template>
     <div class="order-container">
-        <h2>📦 訂單管理列表 (JS 版)</h2>
+        <h3 class="text-2xl font-bold text-gray-800">我的訂單</h3>
 
         <!-- 篩選列 -->
         <div class="filter-bar">
@@ -15,18 +15,12 @@
             </select>
         </div>
 
-        <!-- 載入中提示 -->
-        <div v-if="isLoading" class="loading">
-            資料載入中...
-        </div>
-
         <!-- 訂單表格 -->
-        <table v-else class="order-table">
+        <table class="order-table">
             <thead>
                 <tr>
                     <th>訂單編號</th>
                     <th>建立時間</th>
-                    <th>收件人</th>
                     <th>總金額</th>
                     <th>狀態</th>
                     <th>操作</th>
@@ -35,8 +29,7 @@
             <tbody>
                 <tr v-for="order in filteredOrders" :key="order.id">
                     <td>{{ order.orderNumber }}</td>
-                    <td>{{ order.createdAt }}</td>
-                    <td>{{ order.receiverName }}</td>
+                    <td>{{ order.createdDate }}</td>
                     <td>NT$ {{ order.totalAmount.toLocaleString() }}</td>
                     <td>
                         <span :class="['status-badge', statusMap[order.status]?.class]">
@@ -57,59 +50,20 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { orderApi } from '@/api/orderApi'
 
-// ----------------------------------------------------
-// 狀態定義
-// ----------------------------------------------------
-
-// 訂單列表資料（純 JS 陣列）
+const authStore = useAuthStore()
 const orders = ref([])
-
-// 載入狀態與篩選條件
-const isLoading = ref(false)
 const selectedStatus = ref('ALL')
 
-// ----------------------------------------------------
-// 假資料與 API 模擬
-// ----------------------------------------------------
-const fetchOrders = async () => {
-    isLoading.value = true
-
-    // 模擬 API 延遲與回傳資料
-    setTimeout(() => {
-        orders.value = [
-            {
-                id: 'ord-001',
-                orderNumber: '20260901001',
-                createdAt: '2026-09-01 10:30',
-                receiverName: '張小明',
-                totalAmount: 1280,
-                status: 'PAID'
-            },
-            {
-                id: 'ord-002',
-                orderNumber: '20260901002',
-                createdAt: '2026-09-01 11:15',
-                receiverName: '李美玲',
-                totalAmount: 3450,
-                status: 'SHIPPED'
-            },
-            {
-                id: 'ord-003',
-                orderNumber: '20260831005',
-                createdAt: '2026-08-31 18:20',
-                receiverName: '王大衛',
-                totalAmount: 600,
-                status: 'PENDING'
-            }
-        ]
-        isLoading.value = false
-    }, 600)
+const getOrders = async () => {
+    try {
+        orders.value = await orderApi.getOrders(authStore.memberId, null)
+    } catch (error) {
+        console.error("獲取訂單清單失敗", error)
+    }
 }
-
-// ----------------------------------------------------
-// 計算屬性與方法
-// ----------------------------------------------------
 
 // 根據選取的狀態進行資料篩選
 const filteredOrders = computed(() => {
@@ -130,7 +84,7 @@ const statusMap = {
 
 // 組件掛載時抓取資料
 onMounted(() => {
-    fetchOrders()
+    getOrders()
 })
 </script>
 

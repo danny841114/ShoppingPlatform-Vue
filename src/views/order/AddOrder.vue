@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { orderApi } from '@/api/orderApi'
@@ -125,6 +125,7 @@ const submitOrder = async () => {
 
         await orderApi.addOrder(
             cartStore.selectedItemIds,
+            cartStore.activeVendorId,
             form.name,
             form.phone,
             form.email,
@@ -147,4 +148,17 @@ const submitOrder = async () => {
         });
     }
 }
+
+onMounted(async () => {
+    if (!cartStore.selectedItemIds || cartStore.selectedItemIds.length === 0) {
+        await Swal.fire({
+            title: "購物車內無商品",
+            icon: "error",
+            text: "結帳階段逾時或未勾選商品，將為您引導回購物車",
+            showConfirmButton: true,
+        });
+
+        router.replace('/cart')
+    }
+})
 </script>

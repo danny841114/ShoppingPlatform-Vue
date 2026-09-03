@@ -15,6 +15,7 @@ apiClient.interceptors.response.use(
 export const orderApi = {
   addOrder(
     cartIds,
+    vendorId,
     receiverName,
     receiverPhone,
     receiverEmail,
@@ -27,6 +28,7 @@ export const orderApi = {
       "",
       {
         cartIds,
+        vendorId,
         receiverName,
         receiverPhone,
         receiverEmail,
@@ -37,5 +39,12 @@ export const orderApi = {
       },
       { withCredentials: true }
     );
+  },
+
+  getOrders(memberId, vendorId) {
+    return apiClient.get("", {
+      params: { memberId, vendorId },
+      withCredentials: true,
+    });
   },
 };
