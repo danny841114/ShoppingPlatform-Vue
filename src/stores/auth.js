@@ -21,7 +21,9 @@ export const useAuthStore = defineStore("auth", {
         this.userId = data.userId;
         this.memberId = data.memberId;
         this.vendorId = data.vendorId;
-        this.currentRole = "MEMBER"
+        this.currentRole = "MEMBER";
+
+        localStorage.setItem("currentRole", "MEMBER");
       } catch (error) {
         console.error("登入失敗", error);
         throw error;
@@ -38,7 +40,16 @@ export const useAuthStore = defineStore("auth", {
         this.memberId = data.memberId;
         this.vendorId = data.vendorId;
 
-        this.currentRole = data.roles[0]; // need to fix
+        const savedRole = localStorage.getItem("currentRole");
+
+        if (savedRole && data.roles.includes(savedRole)) {
+          this.currentRole = savedRole;
+        } else {
+          this.currentRole = data.roles[0];
+          if (this.currentRole) {
+            localStorage.setItem("currentRole", this.currentRole);
+          }
+        }
       } catch (error) {
         const statusCode = error.response?.status;
         if (statusCode && statusCode === 401) {
@@ -59,12 +70,16 @@ export const useAuthStore = defineStore("auth", {
       this.userId = null;
       this.memberId = null;
       this.vendorId = null;
+      this.currentRole = null;
+
+      localStorage.removeItem("currentRole");
     },
 
     setRole(role) {
       const validRoles = ["MEMBER", "VENDOR"];
       if (validRoles.includes(role)) {
         this.currentRole = role;
+        localStorage.setItem("currentRole", role);
       } else {
         console.warn("Invalid parameter as role:", role);
       }
