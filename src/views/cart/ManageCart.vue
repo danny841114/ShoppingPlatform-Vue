@@ -22,6 +22,11 @@
 
         <!-- 商家標頭區塊 -->
         <div class="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-3 font-semibold text-gray-800">
+          <input type="checkbox"
+            :checked="group.items.every(item => cartStore.selectedItemIds.includes(item.id)) && group.items.length > 0"
+            :disabled="cartStore.activeVendorId && cartStore.activeVendorId !== group.vendorId"
+            @change="cartStore.toggleVendorAll(group.items)"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" />
           <span class="text-blue-600">🏪</span>
           <span>{{ group.shopName }}</span>
         </div>
@@ -44,7 +49,9 @@
 
               <!-- 核取方塊 -->
               <td class="px-4 py-2 text-center">
-                <input type="checkbox" :value="item.id" @change="cartStore.toggleSelectItem(item)"
+                <input type="checkbox" :checked="cartStore.selectedItemIds.includes(item.id)"
+                  :disabled="cartStore.activeVendorId && cartStore.activeVendorId !== item.product?.vendor?.id"
+                  @change="cartStore.toggleSelectItem(item)"
                   class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
               </td>
 

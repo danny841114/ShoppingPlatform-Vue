@@ -62,11 +62,6 @@ export const useCartStore = defineStore("cart", () => {
     const itemVendorId = item.product?.vendor?.id;
     const index = selectedItemIds.value.indexOf(itemId);
 
-    // console.log("itemId",itemId)
-    // console.log("item.product",item.product)
-    // console.log("item.product?.vendor",item.product?.vendor)
-    // console.log("item.product?.vendor?.id",item.product?.vendor?.id)
-
     // 情況 A：已經勾選過 -> 點擊則是「取消勾選」
     if (index > -1) {
       selectedItemIds.value.splice(index, 1);
@@ -77,22 +72,29 @@ export const useCartStore = defineStore("cart", () => {
     if (activeVendorId.value && activeVendorId.value !== itemVendorId) {
       // 跨 Vendor：直接清空先前的選擇，只保留當前這筆
       selectedItemIds.value = [itemId];
-      console.log("activeVendorId", activeVendorId.value);
-      console.log("itemVendorId", itemVendorId);
-      console.log("AAA");
     } else {
       // 同家 Vendor 或目前尚未選取任何商品 -> 正常加入
       selectedItemIds.value.push(itemId);
-      console.log("BBB");
     }
   };
 
   // 全選/取消全選
-  const toggleSelectAll = () => {
-    if (isAllSelected.value) {
-      selectedItemIds.value = [];
+  const toggleVendorAll = (groupItems) => {
+    const groupItemIds = groupItems.map((item) => item.id);
+
+    // 檢查該商家的商品是否已全選
+    const isAllVendorSelected = groupItemIds.every((id) =>
+      selectedItemIds.value.includes(id)
+    );
+
+    if (isAllVendorSelected) {
+      // 若該商家已全選 -> 清空該商家的勾選
+      selectedItemIds.value = selectedItemIds.value.filter(
+        (id) => !groupItemIds.includes(id)
+      );
     } else {
-      selectedItemIds.value = cartItems.value.map((item) => item.id);
+      // 若尚未全選或跨 Vendor -> 直接將選取目標覆蓋為該商家的所有商品
+      selectedItemIds.value = [...groupItemIds]; // 拷貝新的陣列
     }
   };
 
@@ -172,7 +174,7 @@ export const useCartStore = defineStore("cart", () => {
     fetchCart,
     clearCart,
     toggleSelectItem,
-    toggleSelectAll,
+    toggleVendorAll,
     updateQuantity,
     addItem,
     removeItem,
