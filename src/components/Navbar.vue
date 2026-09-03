@@ -67,8 +67,16 @@
             <span class="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
               👤 {{ authStore.account }}
             </span>
+            <button v-if="authStore.currentRole === 'MEMBER'" @click="setRoleAsVendor"
+              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm cursor-pointer">
+              切換成賣家
+            </button>
+            <button v-if="authStore.currentRole === 'VENDOR'"
+              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm cursor-pointer">
+              切換成買家
+            </button>
             <button @click="logout"
-              class="text-sm font-medium text-red-600 hover:text-red-700 transition focus:outline-none">
+              class="text-sm font-medium text-red-600 hover:text-red-700 transition focus:outline-none cursor-pointer">
               登出
             </button>
           </template>
@@ -146,8 +154,18 @@
           帳號：{{ authStore.account }}
         </div>
 
+        <button v-if="authStore.currentRole === 'MEMBER'" @click="setRoleAsVendor"
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
+          切換成賣家
+        </button>
+
+        <button v-if="authStore.currentRole === 'VENDOR'"
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
+          切換成買家
+        </button>
+
         <button @click="() => { logout(); isOpen = false; }"
-          class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">
+          class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 cursor-pointer">
           登出
         </button>
       </template>
@@ -162,6 +180,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
+import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -203,6 +222,46 @@ const searchProducts = () => {
     },
   });
 };
+
+const setRoleAsVendor = async () => {
+  if (!authStore.roles.includes("VENDOR") || authStore.vendorId == null) {
+    const result = await Swal.fire({
+      title: "尚未有賣家身份",
+      icon: "question",
+      text: "新增賣家身分",
+      allowOutsideClick: false,
+      showCancelButton: true,
+      confirmButtonText: "確定",
+      cancelButtonText: "返回",
+    });
+
+    if (!result.isConfirmed) return
+
+    try {
+      await memberApi.addVendor()
+      await authStore.fetchMe()
+    } catch (error) {
+      Swal.fire({
+        title: "創建賣家身分失敗",
+        icon: "error",
+        confirmButtonText: "確定",
+      });
+
+      return
+    }
+  }
+
+  authStore.setRole("VENDOR")
+
+  Swal.fire({
+    title: "切換成功",
+    icon: "success",
+    text: "目前為賣家身分",
+    timer: 2000,
+    showConfirmButton: false,
+
+  });
+}
 </script>
 
 <style scoped></style>

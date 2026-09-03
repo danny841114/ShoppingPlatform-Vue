@@ -32,4 +32,8 @@ export const memberApi = {
   fetchMe() {
     return apiClient.get("/me", { withCredentials: true });
   },
+
+  addVendor() {
+    return apiClient.post("/add-vendor", null, { withCredentials: true });
+  },
 };
