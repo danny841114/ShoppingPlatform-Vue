@@ -137,7 +137,7 @@ const submitOrder = async () => {
 
         cartStore.clearPurchasedItems()
 
-        router.push("/cart")
+        router.push("/order")
     } catch (error) {
         console.error("訂單送出失敗", error)
         Swal.fire({

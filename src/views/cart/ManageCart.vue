@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { debounce } from 'lodash-es'
 import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
@@ -216,6 +216,11 @@ const checkOut = () => {
 
   router.push("/order/add")
 }
+
+onMounted(async () => {
+  // 確保載入頁面時，購物車內商品正確
+  await cartStore.fetchCart()
+})
 </script>
 
 <style scoped></style>

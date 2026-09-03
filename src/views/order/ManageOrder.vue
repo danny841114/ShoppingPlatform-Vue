@@ -37,7 +37,7 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn-detail">查看細節</button>
+                        <button class="btn-detail" @click="openDetail(order)">查看細節</button>
                     </td>
                 </tr>
                 <tr v-if="filteredOrders.length === 0">
@@ -45,10 +45,14 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- 訂單詳情 Modal 元件 -->
+        <OrderDetailModal :is-open="isModalOpen" :order="selectedOrder" @close="closeModal" />
     </div>
 </template>
 
 <script setup>
+import OrderDetailModal from '@/components/OrderDetailModal.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { orderApi } from '@/api/orderApi'
@@ -56,6 +60,8 @@ import { orderApi } from '@/api/orderApi'
 const authStore = useAuthStore()
 const orders = ref([])
 const selectedStatus = ref('ALL')
+const isModalOpen = ref(false)
+const selectedOrder = ref(null)
 
 const getOrders = async () => {
     try {
@@ -82,10 +88,18 @@ const statusMap = {
     CANCELLED: { label: '已取消', class: 'status-cancelled' }
 }
 
+const openDetail = (order) => {
+    selectedOrder.value = order
+    isModalOpen.value = true
+}
+
+const closeModal = () => {
+    isModalOpen.value = false
+    selectedOrder.value = null
+}
+
 // 組件掛載時抓取資料
-onMounted(() => {
-    getOrders()
-})
+onMounted(getOrders)
 </script>
 
 <style scoped>
