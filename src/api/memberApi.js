@@ -36,4 +36,8 @@ export const memberApi = {
   addVendor() {
     return apiClient.post("/add-vendor", null, { withCredentials: true });
   },
+
+  setRole(role) {
+    return apiClient.put("/set-role", { role }, { withCredentials: true });
+  },
 };

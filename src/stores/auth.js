@@ -53,7 +53,7 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         const statusCode = error.response?.status;
         if (statusCode && statusCode === 401) {
-          console.error("尚未登入");
+          console.log("尚未登入");
         } else {
           console.error("無法取得使用者資訊", error);
         }
@@ -63,25 +63,38 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async logout() {
-      await memberApi.logout();
+      try {
+        await memberApi.logout();
 
-      this.account = null;
-      this.roles = [];
-      this.userId = null;
-      this.memberId = null;
-      this.vendorId = null;
-      this.currentRole = null;
+        this.account = null;
+        this.roles = [];
+        this.userId = null;
+        this.memberId = null;
+        this.vendorId = null;
+        this.currentRole = null;
 
-      localStorage.removeItem("currentRole");
+        localStorage.removeItem("currentRole");
+      } catch (error) {
+        console.error("登出失敗", error);
+        throw error;
+      }
     },
 
-    setRole(role) {
+    async setRole(role) {
       const validRoles = ["MEMBER", "VENDOR"];
-      if (validRoles.includes(role)) {
-        this.currentRole = role;
-        localStorage.setItem("currentRole", role);
-      } else {
-        console.warn("Invalid parameter as role:", role);
+
+      try {
+        if (validRoles.includes(role)) {
+          await memberApi.setRole(role);
+
+          this.currentRole = role;
+
+          localStorage.setItem("currentRole", role);
+        } else {
+          console.warn("角色參數不合法", role);
+        }
+      } catch (error) {
+        console.error("轉換角色失敗", error);
       }
     },
   },
