@@ -71,7 +71,7 @@
               class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm cursor-pointer">
               切換成賣家
             </button>
-            <button v-if="authStore.currentRole === 'VENDOR'"
+            <button v-if="authStore.currentRole === 'VENDOR'" @click="setRoleAsMember"
               class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm cursor-pointer">
               切換成買家
             </button>
@@ -159,7 +159,7 @@
           切換成賣家
         </button>
 
-        <button v-if="authStore.currentRole === 'VENDOR'"
+        <button v-if="authStore.currentRole === 'VENDOR'" @click="setRoleAsMember"
           class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
           切換成買家
         </button>
@@ -177,13 +177,14 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
 import { memberApi } from "@/api/memberApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const cartStore = useCartStore();
 const keyword = ref("");
@@ -223,6 +224,18 @@ const searchProducts = () => {
   });
 };
 
+const checkRoutePermission = (role) => {
+  const allowRole = route.meta?.requiresRole
+
+  if (allowRole && allowRole !== role) {
+    if (role === 'VENDOR') {
+      router.push('/product/manage');
+    } else {
+      router.push('/');
+    }
+  }
+}
+
 const setRoleAsVendor = async () => {
   if (!authStore.roles.includes("VENDOR") || authStore.vendorId == null) {
     const result = await Swal.fire({
@@ -253,14 +266,29 @@ const setRoleAsVendor = async () => {
 
   authStore.setRole("VENDOR")
 
-  Swal.fire({
+  await Swal.fire({
     title: "切換成功",
     icon: "success",
     text: "目前為賣家身分",
     timer: 2000,
     showConfirmButton: false,
-
   });
+
+  checkRoutePermission("VENDOR")
+}
+
+const setRoleAsMember = async () => {
+  authStore.setRole('MEMBER')
+
+  await Swal.fire({
+    title: "切換成功",
+    icon: "success",
+    text: "目前為買家身分",
+    timer: 2000,
+    showConfirmButton: false,
+  });
+
+  checkRoutePermission("MEMBER")
 }
 </script>
 
