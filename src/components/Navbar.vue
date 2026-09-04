@@ -274,6 +274,8 @@ const setRoleAsVendor = async () => {
     showConfirmButton: false,
   });
 
+  cartStore.clearCart()
+
   checkRoutePermission("VENDOR")
 }
 
@@ -287,6 +289,8 @@ const setRoleAsMember = async () => {
     timer: 2000,
     showConfirmButton: false,
   });
+
+  await cartStore.fetchCart()
 
   checkRoutePermission("MEMBER")
 }
