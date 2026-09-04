@@ -4,7 +4,13 @@ import { cartApi } from "@/api/cartApi";
 
 export const useCartStore = defineStore("cart", () => {
   const cartItems = ref([]);
-  const selectedItemIds = ref([]);
+
+  const savedSelectedIds = JSON.parse(
+    sessionStorage.getItem("cart_selected_ids")
+  );
+  const selectedItemIds = ref(
+    Array.isArray(savedSelectedIds) ? savedSelectedIds : []
+  );
 
   // 購物車總商品數
   const totalCount = computed(() => {
@@ -41,10 +47,26 @@ export const useCartStore = defineStore("cart", () => {
     return firstSelectedItem?.product?.vendor?.id || null;
   });
 
+  // 將 selectedItemIds 存入 sessionStorage
+  const saveSelectedIdsToStorage = () => {
+    sessionStorage.setItem(
+      "cart_selected_ids",
+      JSON.stringify(selectedItemIds.value)
+    );
+  };
+
   // 取得購物車列表
   const fetchCart = async () => {
     try {
       cartItems.value = await cartApi.getCartItems();
+
+      // 確保 sessionStorage 裡的 selectedItemIds 合法
+      const validItemIds = cartItems.value.map((item) => item.id);
+      selectedItemIds.value = selectedItemIds.value.filter((id) =>
+        validItemIds.includes(id)
+      );
+
+      saveSelectedIdsToStorage();
     } catch (error) {
       console.error("取得購物車失敗:", error);
     }
@@ -54,6 +76,7 @@ export const useCartStore = defineStore("cart", () => {
   const clearCart = () => {
     cartItems.value = [];
     selectedItemIds.value = [];
+    sessionStorage.removeItem("cart_selected_ids");
   };
 
   // 勾選/取消勾選單一商品
@@ -76,6 +99,8 @@ export const useCartStore = defineStore("cart", () => {
       // 同家 Vendor 或目前尚未選取任何商品 -> 正常加入
       selectedItemIds.value.push(itemId);
     }
+
+    saveSelectedIdsToStorage();
   };
 
   // 全選/取消全選
@@ -96,6 +121,8 @@ export const useCartStore = defineStore("cart", () => {
       // 若尚未全選或跨 Vendor -> 直接將選取目標覆蓋為該商家的所有商品
       selectedItemIds.value = [...groupItemIds]; // 拷貝新的陣列
     }
+
+    saveSelectedIdsToStorage();
   };
 
   // 更新商品數量
@@ -144,6 +171,8 @@ export const useCartStore = defineStore("cart", () => {
       selectedItemIds.value = selectedItemIds.value.filter(
         (itemId) => itemId !== id
       );
+
+      saveSelectedIdsToStorage();
     } catch (error) {
       console.error(`刪除購物車商品 ${id} 失敗:`, error);
       throw error;
