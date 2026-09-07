@@ -41,9 +41,8 @@ export const orderMemberApi = {
     );
   },
 
-  getOrders(memberId, vendorId) {
+  getOrdersByMember() {
     return apiClient.get("", {
-      params: { memberId, vendorId },
       withCredentials: true,
     });
   },

@@ -65,7 +65,7 @@ const selectedOrder = ref(null)
 
 const getOrders = async () => {
     try {
-        orders.value = await orderMemberApi.getOrders(authStore.memberId, null)
+        orders.value = await orderMemberApi.getOrdersByMember()
     } catch (error) {
         console.error("獲取訂單清單失敗", error)
     }
