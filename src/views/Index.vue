@@ -122,7 +122,7 @@ const totalPages = ref(1);
 const totalElements = ref();
 
 const getProductList = async () => {
-  const res = await productPublicApi.getProducts(12, 0, null);
+  const res = await productPublicApi.getProducts(12, 0, keyword.value);
 
   pageSize.value = 12;
   currentPage.value = 0;
