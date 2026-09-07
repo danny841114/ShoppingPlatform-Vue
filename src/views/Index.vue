@@ -136,6 +136,7 @@ const handlePage = async () => {
 
   totalPages.value = res.totalPages;
   productList.value = res.products;
+  totalElements.value = res.totalElements;
 
   if (currentPage.value > totalPages.value) {
     currentPage.value = 0;
