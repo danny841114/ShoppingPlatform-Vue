@@ -33,7 +33,7 @@ npm install
 ### 2. 啟動本地開發伺服器 (Hot-Reload)
 npm run dev
 > 開發預設網址：http://localhost:5173
-> 後端 API 預設位址：http://localhost:8080（請確認 Vite 的 API Proxy 或 CORS 配置）
+> 後端 API 預設位址：http://localhost:8080
 
 ### 3. 編譯與打包 (Production)
 npm run build
