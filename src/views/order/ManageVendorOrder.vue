@@ -22,6 +22,7 @@
                     <th>訂單編號</th>
                     <th>建立時間</th>
                     <th>總金額</th>
+                    <th>買家</th>
                     <th>狀態</th>
                     <th>操作</th>
                 </tr>
@@ -29,8 +30,9 @@
             <tbody>
                 <tr v-for="order in filteredOrders" :key="order.id">
                     <td>{{ order.orderNumber }}</td>
-                    <td>{{ order.createdDate }}</td>
+                    <td>{{ formatLocalDate(order.createdDate) }}</td>
                     <td>NT$ {{ order.totalAmount.toLocaleString() }}</td>
+                    <td>{{ order.member?.account }}</td>
                     <td>
                         <span :class="['status-badge', statusMap[order.status]?.class]">
                             {{ statusMap[order.status]?.label }}
@@ -54,10 +56,9 @@
 <script setup>
 import OrderDetailModal from '@/components/OrderDetailModal.vue'
 import { ref, computed, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
 import { orderVendorApi } from '@/api/order/orderVendorApi'
+import { formatLocalDate } from '@/utils/dateUtils'
 
-const authStore = useAuthStore()
 const orders = ref([])
 const selectedStatus = ref('ALL')
 const isModalOpen = ref(false)

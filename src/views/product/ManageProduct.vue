@@ -36,7 +36,7 @@
             <td class="px-4 py-2 text-center text-gray-800">{{ product.quantity }}</td>
 
             <!-- 上架日期 -->
-            <td class="px-4 py-2 text-center text-gray-500 text-xs">{{ product.date }}</td>
+            <td class="px-4 py-2 text-center text-gray-500 text-xs">{{ formatLocalDate(product.date) }}</td>
 
             <!-- 圖片 -->
             <td class="px-4 py-2 text-center">
@@ -80,6 +80,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { productVendorApi } from "@/api/product/productVendorApi";
+import { formatLocalDate } from '@/utils/dateUtils'
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;

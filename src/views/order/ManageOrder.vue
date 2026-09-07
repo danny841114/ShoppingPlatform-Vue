@@ -29,7 +29,7 @@
             <tbody>
                 <tr v-for="order in filteredOrders" :key="order.id">
                     <td>{{ order.orderNumber }}</td>
-                    <td>{{ order.createdDate }}</td>
+                    <td>{{ formatLocalDate(order.createdDate) }}</td>
                     <td>NT$ {{ order.totalAmount.toLocaleString() }}</td>
                     <td>
                         <span :class="['status-badge', statusMap[order.status]?.class]">
@@ -54,10 +54,9 @@
 <script setup>
 import OrderDetailModal from '@/components/OrderDetailModal.vue'
 import { ref, computed, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
 import { orderMemberApi } from '@/api/order/orderMemberApi'
+import { formatLocalDate } from '@/utils/dateUtils'
 
-const authStore = useAuthStore()
 const orders = ref([])
 const selectedStatus = ref('ALL')
 const isModalOpen = ref(false)
