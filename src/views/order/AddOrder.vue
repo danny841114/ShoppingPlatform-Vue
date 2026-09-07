@@ -94,7 +94,7 @@
 import { reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
-import { orderApi } from '@/api/orderApi'
+import { orderMemberApi } from '@/api/order/orderMemberApi'
 import Swal from "sweetalert2";
 
 const router = useRouter()
@@ -123,7 +123,7 @@ const submitOrder = async () => {
 
         if (!ask.isConfirmed) return;
 
-        await orderApi.addOrder(
+        await orderMemberApi.addOrder(
             cartStore.selectedItemIds,
             cartStore.activeVendorId,
             form.name,

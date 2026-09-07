@@ -180,7 +180,7 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
-import { memberApi } from "@/api/memberApi";
+import { userApi } from "@/api/user/userApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -251,7 +251,7 @@ const setRoleAsVendor = async () => {
     if (!result.isConfirmed) return
 
     try {
-      await memberApi.addVendor()
+      await userApi.addVendor()
       await authStore.fetchMe()
     } catch (error) {
       Swal.fire({

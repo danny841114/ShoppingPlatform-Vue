@@ -82,7 +82,7 @@
               <!-- 圖片 -->
               <td class="px-4 py-2 text-center">
                 <div class="flex items-center justify-center">
-                  <img :src="`${apiBase}/api/product/${item.product?.id}/photo`" alt="商品圖片"
+                  <img :src="`${apiBase}/api/public/products/${item.product?.id}/photo`" alt="商品圖片"
                     class="h-16 w-16 rounded border border-gray-100 bg-gray-50 object-contain"
                     @error="(e) => (e.target.src = '/images/no_image_available.jpg')" />
                 </div>

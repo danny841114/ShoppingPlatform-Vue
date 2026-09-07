@@ -95,7 +95,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { productApi } from "@/api/productApi";
+import { productVendorApi } from "@/api/product/productVendorApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -144,7 +144,7 @@ const addProduct = async () => {
   if (!ask.isConfirmed) return;
 
   try {
-    await productApi.addProduct(
+    await productVendorApi.addProduct(
       productName.value,
       productDescription.value,
       productPrice.value,

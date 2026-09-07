@@ -64,7 +64,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import { memberApi } from "@/api/memberApi";
+import { authApi } from "@/api/user/authApi";
 import Swal from "sweetalert2";
 
 const router = useRouter();
@@ -121,7 +121,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    await memberApi.register(account.value, password.value);
+    await authApi.register(account.value, password.value);
 
     await Swal.fire({
       title: "註冊成功",

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { memberApi } from "@/api/memberApi";
+import { authApi } from "@/api/user/authApi";
+import { userApi } from "@/api/user/userApi";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -14,7 +15,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(account, password) {
       try {
-        const data = await memberApi.login(account, password);
+        const data = await authApi.login(account, password);
 
         this.account = data.account;
         this.roles = data.roles;
@@ -32,7 +33,7 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchMe() {
       try {
-        const data = await memberApi.fetchMe();
+        const data = await userApi.fetchMe();
 
         this.account = data.account;
         this.roles = data.roles;
@@ -64,7 +65,7 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        await memberApi.logout();
+        await authApi.logout();
 
         this.account = null;
         this.roles = [];
@@ -85,7 +86,7 @@ export const useAuthStore = defineStore("auth", {
 
       try {
         if (validRoles.includes(role)) {
-          await memberApi.setRole(role);
+          await userApi.setRole(role);
 
           this.currentRole = role;
 

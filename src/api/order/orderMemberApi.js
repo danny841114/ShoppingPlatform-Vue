@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/orders`,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/member/orders`,
   timeout: 10000,
 });
 
@@ -12,7 +12,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const orderApi = {
+export const orderMemberApi = {
   addOrder(
     cartIds,
     vendorId,

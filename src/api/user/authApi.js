@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/auth`,
   timeout: 10000,
 });
 
@@ -12,7 +12,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const memberApi = {
+export const authApi = {
   register(account, password) {
     return apiClient.post("/register", { account, password });
   },
@@ -27,17 +27,5 @@ export const memberApi = {
 
   logout() {
     return apiClient.post("/logout", null, { withCredentials: true });
-  },
-
-  fetchMe() {
-    return apiClient.get("/me", { withCredentials: true });
-  },
-
-  addVendor() {
-    return apiClient.post("/add-vendor", null, { withCredentials: true });
-  },
-
-  setRole(role) {
-    return apiClient.put("/set-role", { role }, { withCredentials: true });
   },
 };

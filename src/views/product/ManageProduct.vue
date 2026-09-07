@@ -41,7 +41,7 @@
             <!-- 圖片 -->
             <td class="px-4 py-2 text-center">
               <div class="flex items-center justify-center">
-                <img :src="`${apiBase}/api/product/${product.id}/photo`" alt="商品圖片"
+                <img :src="`${apiBase}/api/public/products/${product.id}/photo`" alt="商品圖片"
                   class="h-20 w-20 object-contain rounded border border-gray-100 bg-gray-50" @error="
                     (event) => (event.target.src = '/images/no_image_available.jpg')
                   " />
@@ -79,7 +79,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { productApi } from "@/api/productApi";
+import { productVendorApi } from "@/api/product/productVendorApi";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
@@ -88,7 +88,7 @@ const productList = ref([]);
 /* 獲取商品列表 */
 const getProductList = async () => {
   try {
-    productList.value = await productApi.getProductsByVendor();
+    productList.value = await productVendorApi.getProductsByVendor();
   } catch (error) {
     console.error("無法取得商品列表", error);
   }
@@ -108,7 +108,7 @@ const deleteProduct = async (id) => {
   if (!ask.isConfirmed) return;
 
   try {
-    await productApi.deleteProduct(id);
+    await productVendorApi.deleteProduct(id);
 
     productList.value = productList.value.filter((product) => product.id !== id);
 

@@ -6,7 +6,7 @@
             <div class="space-y-4">
                 <div
                     class="aspect-square overflow-hidden rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
-                    <img v-if='product && product.id' :src="`${apiBase}/api/product/${product.id}/photo`"
+                    <img v-if='product && product.id' :src="`${apiBase}/api/public/products/${product.id}/photo`"
                         :alt="product.name" class="object-cover object-center" />
                 </div>
             </div>
@@ -86,7 +86,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
-import { productApi } from '@/api/productApi'
+import { productPublicApi } from '@/api/product/productPublicApi'
 import { useCartStore } from '@/stores/cart';
 import { useAuthStore } from "@/stores/auth";
 import Swal from "sweetalert2";
@@ -104,7 +104,7 @@ const activeTab = ref('details')
 
 const getProduct = async () => {
     try {
-        product.value = await productApi.getProductById(props.productId)
+        product.value = await productPublicApi.getProductById(props.productId)
     } catch (error) {
         console.log('讀取產品資訊失敗', error)
 

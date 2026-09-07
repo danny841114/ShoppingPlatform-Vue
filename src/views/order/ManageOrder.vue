@@ -55,7 +55,7 @@
 import OrderDetailModal from '@/components/OrderDetailModal.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { orderApi } from '@/api/orderApi'
+import { orderMemberApi } from '@/api/order/orderMemberApi'
 
 const authStore = useAuthStore()
 const orders = ref([])
@@ -65,7 +65,7 @@ const selectedOrder = ref(null)
 
 const getOrders = async () => {
     try {
-        orders.value = await orderApi.getOrders(authStore.memberId, null)
+        orders.value = await orderMemberApi.getOrders(authStore.memberId, null)
     } catch (error) {
         console.error("獲取訂單清單失敗", error)
     }

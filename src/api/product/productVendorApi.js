@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/product`,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/vendor/products`,
   timeout: 10000,
 });
 
@@ -12,25 +12,9 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const productApi = {
-  getProducts(size = 12, page = 0, keyword = "") {
-    return apiClient.get("", {
-      params: {
-        size,
-        page,
-        keyword,
-      },
-    });
-  },
-
+export const productVendorApi = {
   getProductsByVendor() {
-    return apiClient.get("/vendor", {
-      withCredentials: true,
-    });
-  },
-
-  getProductById(id) {
-    return apiClient.get(`/${id}`, {
+    return apiClient.get("", {
       withCredentials: true,
     });
   },

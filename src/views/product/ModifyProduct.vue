@@ -66,7 +66,7 @@
         <!-- 圖片預覽區塊 -->
         <div class="mt-3 flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
           <div class="flex items-center gap-3">
-            <img id="preview" :src="photoPreview || `${apiBase}/api/product/${productId}/photo`"
+            <img id="preview" :src="photoPreview || `${apiBase}/api/public/products/${productId}/photo`"
               class="h-20 w-20 object-contain rounded border border-gray-300 bg-white" alt="商品圖片" @error="
                 (event) => (event.target.src = '/images/no_image_available.jpg')
               " />
@@ -107,7 +107,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { productApi } from "@/api/productApi";
+import { productPublicApi } from "@/api/product/productPublicApi";
+import { productVendorApi } from "@/api/product/productVendorApi";
 import Swal from "sweetalert2";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
@@ -126,7 +127,7 @@ const fileInputKey = ref(Date.now());
 /* 獲取商品資訊 */
 const getProduct = async () => {
   try {
-    const res = await productApi.getProductById(productId);
+    const res = await productPublicApi.getProductById(productId);
 
     productName.value = res.name;
     productDescription.value = res.description || "";
@@ -183,7 +184,7 @@ const modifyProduct = async () => {
   if (!ask.isConfirmed) return;
 
   try {
-    await productApi.updateProduct(
+    await productVendorApi.updateProduct(
       productId,
       productName.value,
       productDescription.value,

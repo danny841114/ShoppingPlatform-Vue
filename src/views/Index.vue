@@ -33,7 +33,7 @@
         <router-link :to="`/product/${product.id}`">
           <!-- 商品圖片區 -->
           <div class="w-full h-48 bg-gray-50 overflow-hidden relative">
-            <img :src="`${apiBase}/api/product/${product.id}/photo`" :alt="product.name"
+            <img :src="`${apiBase}/api/public/products/${product.id}/photo`" :alt="product.name"
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               @error="onImageError" />
           </div>
@@ -109,8 +109,8 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { productApi } from "@/api/productApi";
+import { useRoute } from "vue-router";
+import { productPublicApi } from "@/api/product/productPublicApi";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL;
 const productList = ref([]);
@@ -122,7 +122,7 @@ const totalPages = ref(1);
 const totalElements = ref();
 
 const getProductList = async () => {
-  const res = await productApi.getProducts(12, 0, null);
+  const res = await productPublicApi.getProducts(12, 0, null);
 
   pageSize.value = 12;
   currentPage.value = 0;
@@ -132,7 +132,7 @@ const getProductList = async () => {
 };
 
 const handlePage = async () => {
-  const res = await productApi.getProducts(pageSize.value, currentPage.value, keyword.value);
+  const res = await productPublicApi.getProducts(pageSize.value, currentPage.value, keyword.value);
 
   totalPages.value = res.totalPages;
   productList.value = res.products;
