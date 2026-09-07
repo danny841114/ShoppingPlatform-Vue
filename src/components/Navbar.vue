@@ -264,35 +264,56 @@ const setRoleAsVendor = async () => {
     }
   }
 
-  authStore.setRole("VENDOR")
+  try {
+    await authStore.setRole("VENDOR")
 
-  await Swal.fire({
-    title: "切換成功",
-    icon: "success",
-    text: "目前為賣家身分",
-    timer: 2000,
-    showConfirmButton: false,
-  });
+    await Swal.fire({
+      title: "切換成功",
+      icon: "success",
+      text: "目前為賣家身分",
+      timer: 2000,
+      showConfirmButton: false,
+    });
 
-  cartStore.clearCart()
+    cartStore.clearCart()
 
-  checkRoutePermission("VENDOR")
+    checkRoutePermission("VENDOR")
+  } catch (error) {
+    Swal.fire({
+      title: "切換失敗",
+      icon: "error",
+      text: "仍為賣家身分",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
 }
 
 const setRoleAsMember = async () => {
-  authStore.setRole('MEMBER')
+  try {
 
-  await Swal.fire({
-    title: "切換成功",
-    icon: "success",
-    text: "目前為買家身分",
-    timer: 2000,
-    showConfirmButton: false,
-  });
+    await authStore.setRole('MEMBER')
 
-  await cartStore.fetchCart()
+    await Swal.fire({
+      title: "切換成功",
+      icon: "success",
+      text: "目前為買家身分",
+      timer: 2000,
+      showConfirmButton: false,
+    });
 
-  checkRoutePermission("MEMBER")
+    await cartStore.fetchCart()
+
+    checkRoutePermission("MEMBER")
+  } catch (error) {
+    Swal.fire({
+      title: "切換失敗",
+      icon: "error",
+      text: "仍為買家身分",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
 }
 </script>
 

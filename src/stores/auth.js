@@ -53,13 +53,11 @@ export const useAuthStore = defineStore("auth", {
         }
       } catch (error) {
         const statusCode = error.response?.status;
-        if (statusCode && statusCode === 401) {
+        if (statusCode && (statusCode === 401 || statusCode === 403)) {
           console.log("尚未登入");
         } else {
           console.error("無法取得使用者資訊", error);
         }
-
-        this.logout();
       }
     },
 
@@ -96,6 +94,7 @@ export const useAuthStore = defineStore("auth", {
         }
       } catch (error) {
         console.error("轉換角色失敗", error);
+        throw error;
       }
     },
   },
