@@ -1,5 +1,5 @@
 <template>
-    <div class="order-container">
+    <div class="container mx-auto mt-8 px-4 max-w-6xl">
         <h3 class="text-2xl font-bold text-gray-800">我的訂單</h3>
 
         <!-- 篩選列 -->
@@ -102,13 +102,6 @@ onMounted(getOrders)
 </script>
 
 <style scoped>
-.order-container {
-    padding: 24px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 .filter-bar {
     margin-bottom: 20px;
 }
